@@ -2,20 +2,23 @@ public class Player extends GameObject{
     private String name;
     private int team; // 0 -> Red Team | 1 -> Blue Team
     private int playerId; 
-    private int agent; // agent Id
+    private Agent agent; // agent Id
     private boolean ready;
 
     private int numCredits;
     private boolean alive;
     private int[] guns; // gun Id
     private int health;
+    private final double defaultMovementSpeed;
+    private double movementSpeed;
     private boolean hasSpike;
 
     Player(int newPlayerId){
         this.playerId = newPlayerId;
         
         this.team = -1;
-        this.agent = -1;
+        this.defaultMovementSpeed = Constant.PLAYER_MOVEMENT_SPEED;
+        this.movementSpeed = defaultMovementSpeed;
     }
 
     public boolean coolidesWith(GameObject other) {
@@ -34,7 +37,7 @@ public class Player extends GameObject{
     public int getPlayerId(){
         return this.playerId;
     }
-    public int getAgent(){
+    public Agent getAgent(){
         return this.agent;
     }
     public boolean checkReady(){
@@ -43,7 +46,7 @@ public class Player extends GameObject{
     public int getCredits(){
         return this.numCredits;
     }
-    public boolean checkAlive(){
+    public boolean getAlive(){
         return this.alive;
     }
     public int[] getGuns(){
@@ -51,6 +54,9 @@ public class Player extends GameObject{
     }
     public int getHealth(){
         return this.health;
+    }
+    public double getMovementSpeed(){
+        return this.movementSpeed;
     }
     public boolean checkSpike(){
         return this.hasSpike;
@@ -62,20 +68,23 @@ public class Player extends GameObject{
     public void setTeam(int teamId){
         this.team = teamId;
     }
-    public void setAgent(int agentId){
-        this.agent = agentId;
+    public void setAgent(String agentName){
+        this.agent = Agent.valueOf(agentName);
     }
-    public void switchReady(){
+    public void setReady(){
         this.ready = !(this.ready);
     }
     public void setCredits(int credits){
         this.numCredits = credits;
     }
-    public void switchAlive(){
+    public void setAlive(){
         this.alive = !(this.alive);
     }
     public void setGuns(int slot, int gunId){
         this.guns[slot] = gunId;
+    }
+    public void setMovementSpeed(double newSpeed){
+        this.movementSpeed = newSpeed;
     }
     public void setHealth(int health){
         this.health = health;
@@ -86,5 +95,11 @@ public class Player extends GameObject{
     }
     public void setSpike(boolean hasSpike){
         this.hasSpike = hasSpike;
+    }
+
+//------------------------------------------------------------------------------------------------
+
+    public void resetMovementSpeed(){
+        this.movementSpeed = defaultMovementSpeed;
     }
 }
