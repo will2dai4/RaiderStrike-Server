@@ -1,4 +1,4 @@
-abstract class GameObject{
+public abstract class GameObject{
     int x;
     int y;
 
@@ -16,5 +16,5 @@ abstract class GameObject{
         this.y = y;
     }
 
-    abstract public boolean coolidesWith(GameObject other);
+    abstract public boolean collides(GameObject other);
 }
