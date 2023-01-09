@@ -17,11 +17,11 @@ public class Player extends GameObject{
         this.playerId = newPlayerId;
         
         this.team = -1;
-        this.defaultMovementSpeed = Constant.PLAYER_MOVEMENT_SPEED;
+        this.defaultMovementSpeed = Const.PLAYER_MOVEMENT_SPEED;
         this.movementSpeed = defaultMovementSpeed;
     }
 
-    public boolean coolidesWith(GameObject other) {
+    public boolean collides(GameObject other) {
         return false;
     }
 
