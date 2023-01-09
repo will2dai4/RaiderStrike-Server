@@ -1,4 +1,5 @@
-public enum Map {
-    /*TODO: implement map model(s) */
-    
+import java.util.ArrayList;
+
+public class Map {
+    private final ArrayList<Room> rooms;
 }
