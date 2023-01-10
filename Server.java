@@ -8,4 +8,8 @@ public class Server {
     PrintWriter output;
     BufferedReader input;
     int clientCounter;
+
+    public static void main(String[] args){
+
+    }
 }

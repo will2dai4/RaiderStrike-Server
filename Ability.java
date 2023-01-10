@@ -8,4 +8,14 @@ public abstract class Ability extends GameObject{
         this.damage = damage;
         this.lingerTime = lingerTime;
     }
+
+    public int getSize(){
+        return this.size;
+    }
+    public int getDamage(){
+        return this.damage;
+    }
+    public double getLingerTime(){
+        return this.lingerTime;
+    }
 }

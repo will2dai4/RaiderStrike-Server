@@ -7,5 +7,4 @@ public class SpawnRoom extends Room{
         super(width, height, obstacles, doors);
         this.spawnLocation = spawnLocation;
     }
-    
 }
