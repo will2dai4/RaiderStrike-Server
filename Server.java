@@ -9,11 +9,16 @@ public class Server {
     BufferedReader input;
     int clientCounter;
 
+    HashSet<PlayerHandler> handlers;
+
     public static void main(String[] args){
 
     }
 
-    class ThreadMachine{
-        
+    Server(){
+    }
+
+    class PlayerHandler extends Thread{
+
     }
 }
