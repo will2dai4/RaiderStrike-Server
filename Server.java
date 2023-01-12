@@ -31,6 +31,34 @@ public class Server {
     }
 
     class PlayerHandler extends Thread{
+        Socket socket;
+        PrintWriter output;
+        BufferedReader input;
+        Player player;
+        PlayerHandler(Socket socket){
+            this.socket = socket;
+        }
 
+        public boolean getAlive(){
+            return this.player.getAlive();
+        }
+        public void kill(){
+            Gun gunDrop;
+            if(player.getPrimGun() != null){
+                gunDrop = this.player.getPrimGun();
+            } else {
+                gunDrop = this.player.getSecGun();
+            }
+            this.player.setAlive(false);
+            /* TODO: Drop gun function */
+        }
+    }
+    class PlayerThread extends Thread{
+        class GunThread extends Thread{
+
+        }
+    }
+    class GameThread extends Thread{
+        
     }
 }

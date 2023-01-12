@@ -2,16 +2,18 @@ public class Player extends GameObject{
     private String name;
     private int team; // 0 -> Red Team | 1 -> Blue Team
     private int playerId; 
-    private Agent agent; // agent Id
+    private Agent agent;
     private boolean ready;
 
     private int numCredits;
     private boolean alive;
-    private int[] guns; // gun Id
+    private Gun primaryGun;
+    private Gun secondaryGun;
     private int health;
     private final double defaultMovementSpeed;
     private double movementSpeed;
     private boolean hasSpike;
+    private int direction; // degrees
 
     Player(int newPlayerId){
         this.playerId = newPlayerId;
@@ -23,6 +25,9 @@ public class Player extends GameObject{
 
     public boolean collides(GameObject other) {
         return false;
+    }
+    public void resetMovementSpeed(){
+        this.movementSpeed = defaultMovementSpeed;
     }
 
 //------------------------------------------------------------------------------------------------
@@ -49,8 +54,11 @@ public class Player extends GameObject{
     public boolean getAlive(){
         return this.alive;
     }
-    public int[] getGuns(){
-        return this.guns;
+    public Gun getPrimGun(){
+        return this.primaryGun;
+    }
+    public Gun getSecGun(){
+        return this.secondaryGun;
     }
     public int getHealth(){
         return this.health;
@@ -60,6 +68,9 @@ public class Player extends GameObject{
     }
     public boolean checkSpike(){
         return this.hasSpike;
+    }
+    public int getDirection(){
+        return this.direction;
     }
 
     public void setName(String name){
@@ -77,11 +88,14 @@ public class Player extends GameObject{
     public void setCredits(int credits){
         this.numCredits = credits;
     }
-    public void setAlive(){
-        this.alive = !(this.alive);
+    public void setAlive(boolean alive){
+        this.alive = alive;
     }
-    public void setGuns(int slot, int gunId){
-        this.guns[slot] = gunId;
+    public void setGun(int slot, Gun gun){
+        switch(slot){
+            case 0: this.primaryGun = gun;
+            case 1: this.secondaryGun = gun;
+        }
     }
     public void setMovementSpeed(double newSpeed){
         this.movementSpeed = newSpeed;
@@ -96,10 +110,10 @@ public class Player extends GameObject{
     public void setSpike(boolean hasSpike){
         this.hasSpike = hasSpike;
     }
-
-//------------------------------------------------------------------------------------------------
-
-    public void resetMovementSpeed(){
-        this.movementSpeed = defaultMovementSpeed;
+    public void setDirection(int degrees){
+        this.direction = degrees % 360;
+    }
+    public void setDirection(int deltaX, int deltaY){
+        this.direction = (int)(Math.atan2(deltaY, deltaX));
     }
 }
