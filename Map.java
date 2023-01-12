@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.io.*;
 
 public class Map {
@@ -13,9 +14,15 @@ public class Map {
     public void buildMap() throws IOException{
         this.name = input.readLine();
         this.roomNumber = Integer.parseInt(input.readLine());
+        HashSet<Door> doorList = new HashSet<>();
         for(int i=0;i<roomNumber;i++){
+            boolean isSpawn = (Integer.parseInt(input.readLine()) == 1);
             int width = Integer.parseInt(input.readLine());
             int height = Integer.parseInt(input.readLine());
+            int[] spawnLocations = new int[Const.PLAYER_NUMBER*2];
+            if(isSpawn){
+                for(int j=0;j<spawnLocations.length;j++){spawnLocations[j] = Integer.parseInt(input.readLine());}
+            }
 
             int numObstacles = Integer.parseInt(input.readLine());
             ArrayList<Obstacle> obstacles = new ArrayList<>();
@@ -31,8 +38,10 @@ public class Map {
             int numDoors = Integer.parseInt(input.readLine());
             ArrayList<Door> doors = new ArrayList<>();
             for(int j=0;j<numDoors;j++){
-
+                /* TODO: Create doors and with all parameters (wait for room dimensions) */
             }
+            rooms.add(new Room(width, height, obstacles, doors));
         }
+        /* TODO: Connect doors between rooms (use diagram as reference) */
     }
 }

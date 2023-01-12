@@ -1,0 +1,30 @@
+(String)    MAP NAME
+(int)       NUMBER OF ROOMS
+for number of rooms {
+(int)       IS SPAWN ROOM (1 = yes, 0 = no)
+(int)       ROOM WIDTH 
+(int)       ROOM HEIGHT 
+
+if spawn room { 6 times:
+(int)       SPAWN X 
+(int)       SPAWN Y 
+}
+
+(int)       NUMBER OF OBSTACLES 
+for number of obstacles {
+(int)       OBSTACLE X 
+(int)       OBSTACLE Y 
+(int)       OBSTACLE WIDTH 
+(int)       OBSTACLE HEIGHT 
+(int)       OBSTACLE PERMEABILITY (1 = yes, 0 = no)
+}
+
+(int)       NUMBER OF DOORS 
+for number of doors {
+
+}
+}
+
+for number of doors {
+(int)       CONNECTING DOOR (in order of doors added)
+}

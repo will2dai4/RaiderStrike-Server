@@ -1,13 +1,35 @@
 public enum GunModel {
-    /* TODO: implement gun models */;
-    // Name of enum constant can be acquired using .toString() method
+    // Sidearms
+    Robin(0, 25, 10, 2, 7, 10),
+    Duck(400, 10, 2, 2, 3, 60),
+    Finch(400, 30, 15, 2, 7, 8),
+    Hummingbird(600, 25, 12, 2, 10, 10),
+    Raven(600, 50, 8, 2.5, 2, 4),
+    // Primary
+    // Light Machine Guns
+    Pecker(1000, 20, 20, 2.5, 15, 15),
+    Swift(1400, 25, 25, 3, 13, 12),
+    // Rifles
+    Crane(2000, 60, 15, 3, 3, 4),
+    Eagle(2500, 40, 25, 3, 8, 5),
+    // Shotguns
+    Peacock(1200, 15, 8, 3.5, 1, 40),
+    Turkey(1300, 15, 8, 3.5, 1.5, 20),
+    // Snipers
+    Vulture(1000, 100, 8, 3, 1.5, 2),
+    Falcon(4000, 150, 1, 2, 1, 1),
+    // Heavy Machine Guns
+    Rhea(2300, 25, 50, 4, 12, 15);
+
+    private final int price;
     private final int damage;
     private final int maxAmmo;
     private final double reloadSpeed;
     private final double fireRate;
     private final double fireError;
 
-    private GunModel(int damage, int maxAmmo, double reloadSpeed, double fireRate, double fireError) {
+    private GunModel(int price, int damage, int maxAmmo, double reloadSpeed, double fireRate, double fireError) {
+        this.price = price;
         this.damage = damage;
         this.maxAmmo = maxAmmo;
         this.reloadSpeed = reloadSpeed;
@@ -15,6 +37,9 @@ public enum GunModel {
         this.fireError = fireError;
     }
 
+    public int getPrice(){
+        return this.price;
+    }
     public int getDamage(){
         return this.damage;
     }
