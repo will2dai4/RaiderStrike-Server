@@ -5,20 +5,23 @@ public class Player extends GameObject{
     private Agent agent;
     private boolean ready;
 
-    private int numCredits;
-    private boolean alive;
+    private int itemsHolding;
     private Gun primaryGun;
     private Gun secondaryGun;
+    private int holdingSlot;
     private int health;
-    private final double defaultMovementSpeed;
-    private double movementSpeed;
+    private boolean alive;
+    private int numCredits;
     private boolean hasSpike;
+    private double movementSpeed;
+    private final double defaultMovementSpeed;
     private int direction; // degrees
 
     Player(int newPlayerId){
         this.playerId = newPlayerId;
         
         this.team = -1;
+        this.holdingSlot = 2;
         this.defaultMovementSpeed = Const.PLAYER_MOVEMENT_SPEED;
         this.movementSpeed = defaultMovementSpeed;
     }
@@ -72,6 +75,14 @@ public class Player extends GameObject{
     public int getDirection(){
         return this.direction;
     }
+    public Gun getHolding(){
+        if(this.holdingSlot == 1) return primaryGun;
+        if(this.holdingSlot == 2) return secondaryGun;
+        else return null;
+    }
+    public int getItemsHolding(){
+        return this.itemsHolding;
+    }
 
     public void setName(String name){
         this.name = name;
@@ -115,5 +126,21 @@ public class Player extends GameObject{
     }
     public void setDirection(int deltaX, int deltaY){
         this.direction = (int)(Math.atan2(deltaY, deltaX));
+    }
+    public void setHolding(int gunSlot){
+        switch(gunSlot){
+            case 1: this.holdingSlot = gunSlot;
+            case 2: this.holdingSlot = gunSlot;
+        }
+    }
+    public void switchWeaponUp(){
+        this.holdingSlot = (this.holdingSlot+1) % itemsHolding;
+    }
+    public void switchWeaponDown(){
+        if(this.holdingSlot == 1) this.holdingSlot = this.itemsHolding;
+        else this.holdingSlot--;
+    }
+    public void setItemsHolding(int numItems){
+        this.itemsHolding = numItems;
     }
 }

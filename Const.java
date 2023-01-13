@@ -7,5 +7,7 @@ public class Const {
     public static final double PLAYER_MOVEMENT_SPEED = 0.5; // units per second
     public static final double STARTING_VELOCITY = 10;
 
+    public static final int MAX_NAME_LENGTH = 24;
+
     private Const(){}
 }
