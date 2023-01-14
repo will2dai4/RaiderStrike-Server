@@ -10,6 +10,7 @@ public class Server {
     int clientCounter;
     int idCounter = Integer.MIN_VALUE;
 
+    StateMachine states;
     HashSet<PlayerHandler> handlers;
     HashMap<Integer, Player> players;
 
@@ -17,10 +18,10 @@ public class Server {
 
     public static void main(String[] args) throws IOException{
         Server server = new Server();
-        server.runServer();
+        server.go();
     }
 
-    public void runServer() throws IOException{
+    public void go() throws IOException{
         System.out.println("Starting Server...");
         this.serverSocket = new ServerSocket(Const.PORT);
         System.out.println("Connected at port " + serverSocket.getLocalPort());
@@ -41,7 +42,9 @@ public class Server {
         }
     }
     public void setUp(){
-
+        this.states = new StateMachine();
+        this.handlers = new HashSet<>();
+        this.players = new HashMap<>();
     }
 
     public void printNew(Player player, PlayerHandler playerHandler){
@@ -70,8 +73,34 @@ public class Server {
             this.player.setAlive(false);
             /* TODO: Drop gun function */
         }
+
         public void run(){
-            /* TODO: do this */
+            try {
+                input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                output = new PrintWriter(socket.getOutputStream());
+                while(true){
+                    String msg;
+                    msg = input.readLine();
+                    if(msg != null){
+                        System.out.println("input: " + msg);
+                        String[] args = msg.split(" ");
+                        String command = args[0];
+                        try {
+                            switch(command){
+                                case "NAME":
+                                case "TEAM":
+                                case "AGENT":
+                                case "READY":
+                                /* TODO: fill in conditions */
+                            }
+                        } catch (Exception e) {
+                            /* TODO: Error message */
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
     class PlayerThread extends Thread{
