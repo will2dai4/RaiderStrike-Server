@@ -14,12 +14,9 @@ public class Server {
     HashSet<PlayerHandler> handlers;
     HashMap<Integer, Player> players;
 
-    public final Object playerLock = new Object();
+    HashMap<Integer, Player> handlerMap;
 
-    public static void main(String[] args) throws IOException{
-        Server server = new Server();
-        server.go();
-    }
+    public final Object playerLock = new Object();
 
     public void go() throws IOException{
         System.out.println("Starting Server...");
@@ -34,9 +31,9 @@ public class Server {
             PlayerHandler playerHandler = new PlayerHandler(clientSocket);
             handlers.add(playerHandler);
             playerHandler.start();
-            synchronized(playerLock){
-                for(Integer id: this.players.keySet()){
-                    this.printNew(this.players.get(id), playerHandler);
+            synchronized (playerLock) {
+                for (Integer id: this.players.keySet()) {
+                    System.out.println("ID " + id); // Gives client its id
                 }
             }
         }
@@ -45,10 +42,17 @@ public class Server {
         this.states = new StateMachine();
         this.handlers = new HashSet<>();
         this.players = new HashMap<>();
+        this.handlerMap = new HashMap<>();
     }
 
-    public void printNew(Player player, PlayerHandler playerHandler){
-        /* TODO: print statement here */
+    public Player createPlayer(PlayerHandler playerHandler){
+        Player player = new Player(idCounter++);
+        synchronized(playerLock){
+            this.players.put(player.getPlayerId(), player);
+        }
+        this.handlerMap.put(player.getPlayerId(), player);
+        playerHandler.print("PLAYER " + player.getPlayerId()); // Gives client player ID
+        return player;
     }
 
     class PlayerHandler extends Thread{
@@ -60,9 +64,10 @@ public class Server {
             this.socket = socket;
         }
 
-        public boolean getAlive(){
-            return this.player.getAlive();
+        public void inputName(String name){
+            player.setName(name);
         }
+
         public void kill(){
             Gun gunDrop;
             if(player.getPrimGun() != null){
@@ -81,13 +86,14 @@ public class Server {
                 while(true){
                     String msg;
                     msg = input.readLine();
-                    if(msg != null){
+                    if(msg.length() > 0){
                         System.out.println("input: " + msg);
-                        String[] args = msg.split(" ");
+                        String[] args = msg.split(" ", 2);
                         String command = args[0];
                         try {
                             switch(command){
                                 case "NAME":
+                                    
                                 case "TEAM":
                                 case "AGENT":
                                 case "READY":
@@ -101,6 +107,15 @@ public class Server {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        public void print(String text) {
+            if (this.socket == null) {
+                System.out.println("Dead socket, message send failure");
+                return;
+            };
+            output.println(text);
+            output.flush();
         }
     }
     class PlayerThread extends Thread{
