@@ -10,7 +10,7 @@ public class Server {
     int clientCounter;
     int idCounter = Integer.MIN_VALUE;
 
-    StateMachine states;
+    StateMachine state; /* TODO: implement */
     HashSet<PlayerHandler> handlers;
     HashMap<Integer, Player> players;
 
@@ -39,7 +39,7 @@ public class Server {
         }
     }
     public void setUp(){
-        this.states = new StateMachine();
+        this.state = StateMachine.MenuState;
         this.handlers = new HashSet<>();
         this.players = new HashMap<>();
         this.handlerMap = new HashMap<>();
@@ -84,16 +84,16 @@ public class Server {
                 input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 output = new PrintWriter(socket.getOutputStream());
                 while(true){
-                    String msg;
-                    msg = input.readLine();
+                    String msg = input.readLine();
                     if(msg.length() > 0){
                         System.out.println("input: " + msg);
+                        msg = state.validInput(msg); // checks if the presented command is possible
                         String[] args = msg.split(" ", 2);
                         String command = args[0];
                         try {
                             switch(command){
+                                case "ERROR":
                                 case "NAME":
-                                    
                                 case "TEAM":
                                 case "AGENT":
                                 case "READY":
@@ -119,9 +119,6 @@ public class Server {
         }
     }
     class PlayerThread extends Thread{
-
-    }
-    class GunThread extends Thread{
 
     }
     class GameThread extends Thread{
