@@ -13,6 +13,7 @@ public class Server {
     HashMap<Integer, Player> players;
 
     ArrayList<Thread> playerThreads;
+    GameThread gameThread;
 
     public void go() throws IOException{
         System.out.println("Starting Server...");
@@ -22,8 +23,8 @@ public class Server {
 
         while(true){
             clientSocket = serverSocket.accept();
+            Player player = new Player(clientCounter++, clientSocket);
             System.out.println(clientCounter + " clients connected.");
-            Player player = new Player(clientCounter, clientSocket);
             players.put(player.getPlayerId(), player);
             Thread playerThread = new Thread(player);
             playerThreads.add(playerThread);
@@ -35,15 +36,20 @@ public class Server {
         }
     }
     public void setUp(){
-        this.state = StateMachine.MenuState;
         this.players = new HashMap<>();
         this.playerThreads = new ArrayList<Thread>();
+        this.gameThread = new GameThread(); this.gameThread.start();
     }
 
     class PlayerThread extends Thread{
 
     }
     class GameThread extends Thread{
-
+        @Override
+        public void run(){
+            for(Player player: players.values()){
+                player.update();
+            }
+        }
     }
 }
