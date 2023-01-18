@@ -1,6 +1,7 @@
 import java.util.*;
 
 public class Team {
+    private int maxTeamSize = Const.MAX_TEAM_SIZE;
     private int teamSize;
     private ArrayList<Player> team;
 
@@ -13,9 +14,13 @@ public class Team {
         return this.teamSize;
     }
 
-    public void addPlayer(Player player){
-        team.add(player);
-        teamSize++;
+    public boolean addPlayer(Player player){
+        if(this.teamSize < this.maxTeamSize){
+            team.add(player);
+            teamSize++;
+            return true;
+        }
+        return false;
     }
     public void removePlayer(Player player){
         team.remove(player);

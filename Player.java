@@ -8,6 +8,7 @@ public class Player extends GameObject implements Runnable {
     private int playerId;
     private Agent agent;
     private boolean ready;
+    private boolean loaded;
 
     private int itemsHolding;
     private Gun primaryGun;
@@ -31,7 +32,9 @@ public class Player extends GameObject implements Runnable {
 
     Player(int playerId, Socket socket, Server server) throws IOException {
         this.playerId = playerId;
+        this.loaded = false;
 
+        this.server = server;
         this.socket = socket;
         this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.output = new PrintWriter(socket.getOutputStream());
@@ -67,29 +70,29 @@ public class Player extends GameObject implements Runnable {
             switch(state.name()){
                 case "PREGAME":
                     switch(command){
-                        case "NAME": this.name(args);
-                        case "TEAM": this.team(args);
-                        case "AGENT": this.agent(args);
-                        case "READY": this.ready();
+                        case "NAME": this.name(args);  break;
+                        case "TEAM": this.team(args); break;
+                        case "AGENT": this.agent(args); break;
+                        case "READY": this.ready(); break;
                     }
                 case "LOADING":
                     switch(command){
-                        case "LOADED": this.loaded();
+                        case "LOADED": this.loaded(); break;
                     }
                 case "INGAME":
                     switch(command){
-                        case "SWAP": this.swap(args);
-                        case "AIM": this.aim(args);
-                        case "MOVE": this.move(args);
-                        case "FIRE": this.fire();
-                        case "UTIL": this.util(args);
-                        case "RELOAD": this.reload();
-                        case "BOMB": this.bomb();
-                        case "PICKUP": this.pickUp(args);
+                        case "SWAP": this.swap(args); break;
+                        case "AIM": this.aim(args); break;
+                        case "MOVE": this.move(args); break;
+                        case "FIRE": this.fire(); break;
+                        case "UTIL": this.util(args); break;
+                        case "RELOAD": this.reload(); break;
+                        case "BOMB": this.bomb(); break;
+                        case "PICKUP": this.pickUp(args); break;
                     }
                 case "BUYMENU":
                     switch(command){
-                        case "BUY": this.buy(args);
+                        case "BUY": this.buy(args); break;
                     }
             }
         }
@@ -138,8 +141,22 @@ public class Player extends GameObject implements Runnable {
     }
     public void team(String[] args){
         if(!this.ready){
-            this.setTeam(Integer.parseInt(args[0]));
-            /* TODO: make something to count player in a team */
+            int teamId = Integer.parseInt(args[0]);
+            switch(teamId){
+                case 0: 
+                    if(this.server.redTeam.addPlayer(this)){ 
+                        this.print("JOINED"); 
+                        this.server.printAll("TEAM " + server.redTeam.getTeamSize() + " " + server.blueTeam.getTeamSize());
+                    }
+                    break;
+                case 1:
+                    if(this.server.blueTeam.addPlayer(this)){ 
+                        this.print("JOINED"); 
+                        this.server.printAll("TEAM " + server.redTeam.getTeamSize() + " " + server.blueTeam.getTeamSize());
+                    }
+                    break;
+            }
+            
         }
     }
     public void agent(String[] args){
@@ -155,11 +172,14 @@ public class Player extends GameObject implements Runnable {
     }
 
     public void loaded(){
-        
+        this.setLoaded();
+        this.server.printAll("LOADED " + this.getPlayerId());
     }
 
     public void swap(String[] args){
-        
+        int slot = Integer.parseInt(args[0]);
+        this.setHolding(slot);
+        this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.getItemsHolding()); /* TODO: edit get items holding */
     }
     public void aim(String[] args){
         
@@ -255,6 +275,14 @@ public class Player extends GameObject implements Runnable {
         return this.itemsHolding;
     }
 
+    public boolean getLoaded(){
+        return this.loaded;
+    }
+
+    public boolean getReady(){
+        return this.ready;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -337,5 +365,9 @@ public class Player extends GameObject implements Runnable {
 
     public void setItemsHolding(int numItems) {
         this.itemsHolding = numItems;
+    }
+
+    public void setLoaded(){
+        this.loaded = true;
     }
 }
