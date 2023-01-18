@@ -21,6 +21,7 @@ public class Player extends GameObject implements Runnable {
     private final double defaultMovementSpeed;
     private int direction; // degrees
 
+    Server server;
     Socket socket;
     PrintWriter output;
     BufferedReader input;
@@ -28,7 +29,7 @@ public class Player extends GameObject implements Runnable {
     GameState state;
     Queue<String> messages;
 
-    Player(int playerId, Socket socket) throws IOException {
+    Player(int playerId, Socket socket, Server server) throws IOException {
         this.playerId = playerId;
 
         this.socket = socket;
@@ -60,16 +61,15 @@ public class Player extends GameObject implements Runnable {
 
     public void update(){
         while(!messages.isEmpty()){
-            String msg = messages.poll();
-            String[] args = msg.split(" ", 2);
-            String command = args[0];
-            String execute = args[1];
+            String[] msg = messages.poll().split(" ");
+            String command = msg[0];
+            String[] args = Arrays.copyOfRange(msg, 1, msg.length);
             switch(state.name()){
                 case "PREGAME":
                     switch(command){
-                        case "NAME": this.name(execute);
-                        case "TEAM": this.team(execute);
-                        case "AGENT": this.agent(execute);
+                        case "NAME": this.name(args);
+                        case "TEAM": this.team(args);
+                        case "AGENT": this.agent(args);
                         case "READY": this.ready();
                     }
                 case "LOADING":
@@ -78,18 +78,18 @@ public class Player extends GameObject implements Runnable {
                     }
                 case "INGAME":
                     switch(command){
-                        case "SWAP": this.swap(execute);
-                        case "AIM": this.aim(execute);
-                        case "MOVE": this.move(execute);
+                        case "SWAP": this.swap(args);
+                        case "AIM": this.aim(args);
+                        case "MOVE": this.move(args);
                         case "FIRE": this.fire();
-                        case "UTIL": this.util(execute);
+                        case "UTIL": this.util(args);
                         case "RELOAD": this.reload();
                         case "BOMB": this.bomb();
-                        case "PICKUP": this.pickUp(execute);
+                        case "PICKUP": this.pickUp(args);
                     }
                 case "BUYMENU":
                     switch(command){
-                        case "BUY": this.buy(execute);
+                        case "BUY": this.buy(args);
                     }
             }
         }
@@ -126,36 +126,51 @@ public class Player extends GameObject implements Runnable {
 // ------------------------------------------------------------------------------------------------
     // Client to server commands
     /* TODO: this */
-    public void name(String input) {
-        this.setName(name);
+    public void name(String[] args) {
+        if(!this.ready){
+            String playerName = "";
+            for(String name: args){
+                playerName = playerName+name;
+            }
+            this.name = playerName;
+            this.server.printAll("NAME " + this.getPlayerId() + " " + playerName);
+        }
     }
-    public void team(String input){
-
+    public void team(String[] args){
+        if(!this.ready){
+            this.setTeam(Integer.parseInt(args[0]));
+            /* TODO: make something to count player in a team */
+        }
     }
-    public void agent(String input){
-        
+    public void agent(String[] args){
+        if(!this.ready){
+            String agentName = args[0];
+            this.setAgent(agentName);
+            this.server.printAll("AGENT " + this.getPlayerId() + " " + agentName);
+        }
     }
     public void ready(){
-        
+        this.setReady();
+        this.server.printAll("READY " + this.getPlayerId());
     }
 
     public void loaded(){
         
     }
 
-    public void swap(String input){
+    public void swap(String[] args){
         
     }
-    public void aim(String input){
+    public void aim(String[] args){
         
     }
-    public void move(String input){
+    public void move(String[] args){
         
     }
     public void fire(){
 
     }
-    public void util(String input){
+    public void util(String[] args){
         
     }
     public void reload(){
@@ -164,11 +179,11 @@ public class Player extends GameObject implements Runnable {
     public void bomb(){
         
     }
-    public void pickUp(String input){
+    public void pickUp(String[] args){
         
     }
 
-    public void buy(String input){
+    public void buy(String[] args){
 
     }
 
@@ -253,7 +268,7 @@ public class Player extends GameObject implements Runnable {
     }
 
     public void setReady() {
-        this.ready = !(this.ready);
+        this.ready = true;
     }
 
     public void setCredits(int credits) {

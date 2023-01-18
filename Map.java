@@ -19,7 +19,7 @@ public class Map {
             boolean isSpawn = (Integer.parseInt(input.readLine()) == 1);
             int width = Integer.parseInt(input.readLine());
             int height = Integer.parseInt(input.readLine());
-            int[] spawnLocations = new int[Const.PLAYER_NUMBER*2];
+            int[] spawnLocations = new int[Const.MAX_PLAYER_COUNT];
             if(isSpawn){
                 for(int j=0;j<spawnLocations.length;j++){spawnLocations[j] = Integer.parseInt(input.readLine());}
             }

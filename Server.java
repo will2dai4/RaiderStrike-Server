@@ -11,6 +11,8 @@ public class Server {
 
     StateMachine state; /* TODO: implement */
     HashMap<Integer, Player> players;
+    Team blueTeam;
+    Team redTeam;
 
     ArrayList<Thread> playerThreads;
     GameThread gameThread;
@@ -23,7 +25,7 @@ public class Server {
 
         while(true){
             clientSocket = serverSocket.accept();
-            Player player = new Player(clientCounter++, clientSocket);
+            Player player = new Player(clientCounter++, clientSocket, this);
             System.out.println(clientCounter + " clients connected.");
             players.put(player.getPlayerId(), player);
             Thread playerThread = new Thread(player);
@@ -39,6 +41,11 @@ public class Server {
         this.players = new HashMap<>();
         this.playerThreads = new ArrayList<Thread>();
         this.gameThread = new GameThread(); this.gameThread.start();
+    }
+    public void printAll(String text){
+        for(Player player: players.values()){
+            player.print(text);
+        }
     }
 
     class PlayerThread extends Thread{
