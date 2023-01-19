@@ -103,6 +103,7 @@ public class Player extends GameObject implements Runnable {
             return;
         }
         this.output.println(text);
+        System.out.println(text);
         this.output.flush();
     }
 

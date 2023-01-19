@@ -35,14 +35,12 @@ public class Server {
                 }
                 for (Player player: players.values()){
                     player.update();
-                }    
+                }
+
                 if(!gameStarted && canStart()){
-                    this.printAll("START");  
-                    this.gameStarted = true;
-                    this.state = this.state.nextState();
+                    this.start();
                 }
                 if(!inGame && allLoaded()){
-                    this.printAll("MAP"); /* TODO: implement map String textwall */
                     this.inGame = true;
                     this.state = this.state.nextState();
                 }
@@ -65,6 +63,7 @@ public class Server {
                     return false;
                 }
             } 
+
             return true;
         }
         return false;
@@ -89,12 +88,27 @@ public class Server {
         return false;
     }
 
+    private void start() throws IOException{
+        this.printAll("START");  
+        this.gameStarted = true;
+        this.state = this.state.nextState();
+
+        this.printAll("MAP" + "\n");
+        BufferedReader mapReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("Maps/AugustaMap.txt"))));
+        String mapLine = mapReader.readLine();
+        while(mapLine != null){
+            System.out.println(mapLine);
+            this.printAll(mapLine);
+            mapLine = mapReader.readLine();
+        }
+    }
 //------------------------------------------------------------------------------------------------------
 
     public void printAll(String text){
         for(Player player: players.values()){
             player.print(text);
         }
+        //System.out.println(text);
     }
     private void addPlayer(Socket socket) throws IOException {
         Player player = new Player(clientCounter++, clientSocket, this);
@@ -105,6 +119,7 @@ public class Server {
 
         player.print("ID " + player.getPlayerId());
         player.print("TEAM " + redTeam.getTeamSize() + " " + blueTeam.getTeamSize());
+        this.printAll("PLAYER " + player.getPlayerId());
         for (Integer id: players.keySet()) {
             player.print("PLAYER " + id); // Gives client its id
         }
