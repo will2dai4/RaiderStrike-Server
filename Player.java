@@ -58,7 +58,7 @@ public class Player extends GameObject implements Runnable {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            /* THIS IS WHAT IS RUN WHEN THE SOCKET CLOSES! TODO: implement player disconnect */
         }
     }
 
