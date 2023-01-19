@@ -10,6 +10,7 @@ public class Server {
     int clientCounter;
 
     StateMachine state; /* TODO: implement */
+    Queue<Socket> newPlayers;
     HashMap<Integer, Player> players;
     Team blueTeam;
     Team redTeam;
@@ -17,6 +18,7 @@ public class Server {
 
     ArrayList<Thread> playerThreads;
     ConnectionHandler connectionHandler;
+
 
     public void go() throws IOException{
         System.out.println("Starting Server...");
@@ -26,9 +28,12 @@ public class Server {
 
         while(true){
             try {
+                while (!this.newPlayers.isEmpty()) {
+                    this.addPlayer(this.newPlayers.poll());
+                }
                 for (Player player: players.values()){
                     player.update();
-                }
+                }    
                 if(!gameStarted || canStart()){
                     printAll("START");  
                     gameStarted = true;
@@ -37,6 +42,7 @@ public class Server {
         }
     }
     public void setUp(){
+        this.newPlayers = new LinkedList<Socket>();
         this.players = new HashMap<>();
         this.blueTeam = new Team();
         this.redTeam = new Team();
@@ -58,7 +64,20 @@ public class Server {
             player.print(text);
         }
     }
+    public void addPlayer(Socket socket) throws IOException {
+        Player player = new Player(clientCounter++, clientSocket, this);
+        System.out.println(clientCounter + " clients connected.");
+        players.put(player.getPlayerId(), player);
+        Thread playerThread = new Thread(player);
+        playerThreads.add(playerThread);
+        playerThread.start();
+        player.print("ID " + player.getPlayerId());
+        player.print("TEAM " + redTeam.getTeamSize() + " " + blueTeam.getTeamSize());
+        for (Integer id: players.keySet()) {
+            player.print("PLAYER " + id); // Gives client its id
+        }
 
+    }
     class ConnectionHandler extends Thread{
         Server server;
         ConnectionHandler(Server server) {
@@ -70,18 +89,7 @@ public class Server {
             try {
                 while (true) {
                     clientSocket = serverSocket.accept();
-                    Player player = new Player(clientCounter++, clientSocket, server);
-                    System.out.println(clientCounter + " clients connected.");
-                    players.put(player.getPlayerId(), player);
-                    Thread playerThread = new Thread(player);
-                    playerThreads.add(playerThread);
-                    playerThread.start();
-                    System.out.println("test?");
-                    player.print("ID " + player.getPlayerId());
-                    player.print("TEAM " + redTeam.getTeamSize() + " " + blueTeam.getTeamSize());
-                    for (Integer id: players.keySet()) {
-                        player.print("PLAYER " + id); // Gives client its id
-                    }
+                    newPlayers.add(clientSocket);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
