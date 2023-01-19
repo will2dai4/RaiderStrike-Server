@@ -4,7 +4,7 @@ import java.io.*;
 
 public class Player extends GameObject implements Runnable {
     private String name;
-    private int team; // 0 -> Red Team | 1 -> Blue Team
+    private Team team; // 0 -> Red Team | 1 -> Blue Team
     private int playerId;
     private Agent agent;
     private boolean ready;
@@ -22,13 +22,13 @@ public class Player extends GameObject implements Runnable {
     private final double defaultMovementSpeed;
     private int direction; // degrees
 
-    Server server;
-    Socket socket;
-    PrintWriter output;
-    BufferedReader input;
+    private Server server;
+    private Socket socket;
+    private PrintWriter output;
+    private BufferedReader input;
 
-    GameState state;
-    Queue<String> messages;
+    private GameState state;
+    private Queue<String> messages;
 
     Player(int playerId, Socket socket, Server server) throws IOException {
         this.playerId = playerId;
@@ -39,13 +39,12 @@ public class Player extends GameObject implements Runnable {
         this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.output = new PrintWriter(socket.getOutputStream());
 
-        this.team = -1;
         this.holdingSlot = 2;
         this.defaultMovementSpeed = Const.PLAYER_MOVEMENT_SPEED;
         this.movementSpeed = defaultMovementSpeed;
 
+        this.state = this.server.state;
         this.messages = new LinkedList<String>();
-        this.state = GameState.PREGAME;
     }
 
     public void run() {
@@ -129,7 +128,7 @@ public class Player extends GameObject implements Runnable {
 // ------------------------------------------------------------------------------------------------
     // Client to server commands
     /* TODO: this */
-    public void name(String[] args) {
+    private void name(String[] args) {
         if(!this.ready){
             String playerName = "";
             for(String name: args){
@@ -139,18 +138,20 @@ public class Player extends GameObject implements Runnable {
             this.server.printAll("NAME " + this.getPlayerId() + " " + playerName);
         }
     }
-    public void team(String[] args){
+    private void team(String[] args){
         if(!this.ready){
             int teamId = Integer.parseInt(args[0]);
             switch(teamId){
                 case 0: 
                     if(this.server.redTeam.addPlayer(this)){ 
+                        this.setTeam(this.server.redTeam);
                         this.print("JOINED"); 
                         this.server.printAll("TEAM " + server.redTeam.getTeamSize() + " " + server.blueTeam.getTeamSize());
                     }
                     break;
                 case 1:
                     if(this.server.blueTeam.addPlayer(this)){ 
+                        this.setTeam(this.server.blueTeam);
                         this.print("JOINED"); 
                         this.server.printAll("TEAM " + server.redTeam.getTeamSize() + " " + server.blueTeam.getTeamSize());
                     }
@@ -159,51 +160,53 @@ public class Player extends GameObject implements Runnable {
             
         }
     }
-    public void agent(String[] args){
+    private void agent(String[] args){
         if(!this.ready){
             String agentName = args[0];
             this.setAgent(agentName);
             this.server.printAll("AGENT " + this.getPlayerId() + " " + agentName);
         }
     }
-    public void ready(){
-        this.setReady();
-        this.server.printAll("READY " + this.getPlayerId());
+    private void ready(){
+        if(this.agent != null && this.team != null && this.team.addAgent(this.agent)){
+            this.setReady();
+            this.server.printAll("READY " + this.getPlayerId());
+        }
     }
 
-    public void loaded(){
+    private void loaded(){
         this.setLoaded();
         this.server.printAll("LOADED " + this.getPlayerId());
     }
 
-    public void swap(String[] args){
+    private void swap(String[] args){
         int slot = Integer.parseInt(args[0]);
         this.setHolding(slot);
         this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.getItemsHolding()); /* TODO: edit get items holding */
     }
-    public void aim(String[] args){
+    private void aim(String[] args){
         
     }
-    public void move(String[] args){
+    private void move(String[] args){
         
     }
-    public void fire(){
+    private void fire(){
 
     }
-    public void util(String[] args){
+    private void util(String[] args){
         
     }
-    public void reload(){
+    private void reload(){
         
     }
-    public void bomb(){
+    private void bomb(){
         
     }
-    public void pickUp(String[] args){
+    private void pickUp(String[] args){
         
     }
 
-    public void buy(String[] args){
+    private void buy(String[] args){
 
     }
 
@@ -215,7 +218,7 @@ public class Player extends GameObject implements Runnable {
     }
 
     public int getTeam() {
-        return this.team;
+        return this.team.getTeamNum();
     }
 
     public int getPlayerId() {
@@ -287,8 +290,8 @@ public class Player extends GameObject implements Runnable {
         this.name = name;
     }
 
-    public void setTeam(int teamId) {
-        this.team = teamId;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public void setAgent(String agentName) {
