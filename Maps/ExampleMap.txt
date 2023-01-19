@@ -1,32 +1,20 @@
-(String)    MAP NAME
-(int)       NUMBER OF ROOMS
-for number of rooms {
-(int)       IS SPAWN ROOM (1 = yes, 0 = no)
-(int)       ROOM WIDTH 
-(int)       ROOM HEIGHT 
+NAME <String name>
+ROOM_COUNT <int count>
+DEFENDER_SPAWN <int roomId>
+ATTACKER_SPAWN <int roomId>
+BOMB_ROOM <int* roomId>
 
-if spawn room { 6 times:
-(int)       SPAWN X 
-(int)       SPAWN Y 
-}
+ROOM_COLOR <int r> <int g> <int b>
+OBSTACLE_COLOR <int r> <int g> <int b>
+PEN_OBSTACLE_COLOR <int r> <int g> <int b>
 
-(int)       NUMBER OF OBSTACLES 
-for number of obstacles {
-(int)       OBSTACLE X 
-(int)       OBSTACLE Y 
-(int)       OBSTACLE WIDTH 
-(int)       OBSTACLE HEIGHT 
-(int)       OBSTACLE PERMEABILITY (1 = yes, 0 = no)
-}
+WIDTH <int width>
+HEIGHT <int height>
 
-(int)       NUMBER OF DOORS 
-for number of doors {
-(int)       DOOR X
-(int)       DOOR Y 
-(int)       EXIT DIRECTION (0 = UP, 1 = RIGHT, 2 = DOWN, 3 = LEFT)
-}
-}
+OBSTACLE_COUNT <int count>
+OBSTACLE <String shape> <int width> <int height> <int x> <int y> <boolean penetrable>
 
-for number of doors {
-(int)       CONNECTING DOOR (in order of doors added)
-}
+DOOR_COUNT <int count>
+DOOR <int width> <int x> <int y> <int idToRoom> <int doorId> <int direction>
+
+SPAWN_LOCATION <int x1> <int y1> <int x2> <int y2> <int x3> <int y3>

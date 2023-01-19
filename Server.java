@@ -10,7 +10,7 @@ public class Server {
     int clientCounter;
 
     GameState state;
-    StateMachine stateMachine; /* TODO: implement */
+    StateMachine stateMachine; /* TODO: ignore for now */
 
     Queue<Socket> newPlayers;
     HashMap<Integer, Player> players;
@@ -59,6 +59,16 @@ public class Server {
         this.connectionHandler = new ConnectionHandler(this); this.connectionHandler.start();
     }
     private boolean canStart(){
+        if(this.players.size() >= 2){
+            for(Player player: this.players.values()){
+                if(!player.getReady()){
+                    return false;
+                }
+            } 
+            return true;
+        }
+        return false;
+        /* 
         if(this.players.size() == Const.MAX_PLAYER_COUNT){
             for(Player player: this.players.values()){
                 if(!player.getReady()){
@@ -68,18 +78,19 @@ public class Server {
             return true;
         }
         return false;
+        */ // TODO: reimplement when done testing
     }
     private boolean allLoaded(){
-        if(this.players.size() == Const.MAX_PLAYER_COUNT){
-            for(Player player: this.players.values()){
-                if(!player.getLoaded()){
-                    return false;
-                }
-            } 
-            return true;
-        }
+        for(Player player: this.players.values()){
+            if(!player.getLoaded()){
+                return false;
+            }
+        } 
         return false;
     }
+
+//------------------------------------------------------------------------------------------------------
+
     public void printAll(String text){
         for(Player player: players.values()){
             player.print(text);

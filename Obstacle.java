@@ -1,13 +1,15 @@
 public class Obstacle extends GameObject{
+    private String shape;
     private int width;
     private int height;
     private boolean permeable;
 
-    Obstacle(int x, int y, int width, int height, boolean permeable){
+    Obstacle(String shape, int x, int y, int width, int height, boolean permeable){
         super.setX(x);
         super.setY(y);
         super.setWidth(width);
         super.setHeight(height);
+        this.shape = shape;
         this.permeable = permeable;
     }
 

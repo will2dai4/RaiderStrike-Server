@@ -4,7 +4,7 @@ import java.io.*;
 
 public class Map {
     private String name;
-    private int roomNumber;
+    private int roomCount;
     private ArrayList<Room> rooms;
     private BufferedReader input;
 
@@ -12,36 +12,39 @@ public class Map {
         input = new BufferedReader(new FileReader(mapFile));
     }
     public void buildMap() throws IOException{
+        int roomCount = 0;
+
         this.name = input.readLine();
-        this.roomNumber = Integer.parseInt(input.readLine());
-        HashSet<Door> doorList = new HashSet<>();
-        for(int i=0;i<roomNumber;i++){
-            boolean isSpawn = (Integer.parseInt(input.readLine()) == 1);
+        this.roomCount = Integer.parseInt(input.readLine());
+        int defenderRoom = Integer.parseInt(input.readLine());
+        int attackerRoom = Integer.parseInt(input.readLine());
+        String[] bombRooms = input.readLine().split(" ");
+        int bombRoom1 = Integer.parseInt(bombRooms[0]);
+        int bombRoom2 = Integer.parseInt(bombRooms[1]);
+        for(int i=0;i<this.roomCount;i++){
+            String roomColor = input.readLine();
+            String obsColor = input.readLine();
+            String penObsColor = input.readLine();
             int width = Integer.parseInt(input.readLine());
             int height = Integer.parseInt(input.readLine());
-            int[] spawnLocations = new int[Const.MAX_PLAYER_COUNT];
-            if(isSpawn){
-                for(int j=0;j<spawnLocations.length;j++){spawnLocations[j] = Integer.parseInt(input.readLine());}
-            }
 
-            int numObstacles = Integer.parseInt(input.readLine());
+            int obsCount = Integer.parseInt(input.readLine());
             ArrayList<Obstacle> obstacles = new ArrayList<>();
-            for(int j=0;j<numObstacles;j++){
-                int obsX = Integer.parseInt(input.readLine());
-                int obsY = Integer.parseInt(input.readLine());
+            for(int j=0;j<obsCount;j++){
+                String shape = input.readLine();
                 int obsWidth = Integer.parseInt(input.readLine());
                 int obsHeight = Integer.parseInt(input.readLine());
+                int obsX = Integer.parseInt(input.readLine());
+                int obsY = Integer.parseInt(input.readLine());
                 boolean permeable = (Integer.parseInt(input.readLine()) == 1);
-                obstacles.add(new Obstacle(obsX, obsY, obsWidth, obsHeight, permeable));
+                obstacles.add(new Obstacle(shape, obsWidth, obsHeight, obsX, obsY, permeable));
             }
 
-            int numDoors = Integer.parseInt(input.readLine());
+            int doorCount = Integer.parseInt(input.readLine());
             ArrayList<Door> doors = new ArrayList<>();
-            for(int j=0;j<numDoors;j++){
-                /* TODO: Create doors and with all parameters (wait for room dimensions) */
+            for(int j=0;j<doorCount;j++){
+                /* TODO: figure out door problem: how door leads to room through another door */
             }
-            rooms.add(new Room(width, height, obstacles, doors));
         }
-        /* TODO: Connect doors between rooms (use diagram as reference) */
     }
 }
