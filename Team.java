@@ -5,13 +5,13 @@ public class Team {
 
     private int maxTeamSize = Const.MAX_TEAM_SIZE;
     private int teamSize;
-    private ArrayList<Player> team;
+    private HashSet<Player> team;
     private HashSet<Agent> agentsSelected;
 
     Team(int teamNum){
         this.teamId = teamNum;
         this.teamSize = 0;
-        this.team = new ArrayList<>();
+        this.team = new HashSet<>();
         this.agentsSelected = new HashSet<>();
     }
 
@@ -20,6 +20,9 @@ public class Team {
     }
     public int getTeamSize(){
         return this.teamSize;
+    }
+    public HashSet<Player> getTeam(){
+        return this.team;
     }
 
     public boolean addAgent(Agent agent){

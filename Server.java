@@ -41,8 +41,9 @@ public class Server {
                     this.start();
                 }
                 if(!inGame && allLoaded()){
-                    this.inGame = true;
+                    this.printAll("START");
                     this.state = this.state.nextState();
+                    this.inGame = true;
                 }
             } catch (Exception e) {e.printStackTrace();}
         }
@@ -77,14 +78,17 @@ public class Server {
             return true;
         }
         return false;
-        */ // TODO: reimplement when done testing
+        */ // TODO: reimplement with allLoaded() when done testing
     }
     private boolean allLoaded(){
-        for(Player player: this.players.values()){
-            if(!player.getLoaded()){
-                return false;
-            }
-        } 
+        if(this.players.size() >= 2){
+            for(Player player: this.players.values()){
+                if(!player.getLoaded()){
+                    return false;
+                }
+            } 
+            return true;
+        }
         return false;
     }
 
@@ -101,14 +105,26 @@ public class Server {
             this.printAll(mapLine);
             mapLine = mapReader.readLine();
         }
+
+        for(Player player: players.values()){
+            this.printAll("NAME " + player.getPlayerId() + " " + player.getName());
+            this.printAll("AGENT " + player.getPlayerId() + " " + player.getAgent().toString());
+        }
     }
+
 //------------------------------------------------------------------------------------------------------
 
     public void printAll(String text){
         for(Player player: players.values()){
             player.print(text);
         }
-        //System.out.println(text);
+    }
+    public void printTeam(String text, Team team){
+        for(Player player: players.values()){
+            if(player.getTeam() == (team.getTeamNum())){
+                player.print(text);
+            }
+        }
     }
     private void addPlayer(Socket socket) throws IOException {
         Player player = new Player(clientCounter++, clientSocket, this);
@@ -121,7 +137,9 @@ public class Server {
         player.print("TEAM " + redTeam.getTeamSize() + " " + blueTeam.getTeamSize());
         this.printAll("PLAYER " + player.getPlayerId());
         for (Integer id: players.keySet()) {
-            player.print("PLAYER " + id); // Gives client its id
+            if(id != player.getPlayerId()){
+                player.print("PLAYER " + id);
+            } // Gives client its id
         }
     }
     class ConnectionHandler extends Thread{

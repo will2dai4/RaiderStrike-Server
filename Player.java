@@ -106,6 +106,15 @@ public class Player extends GameObject implements Runnable {
         System.out.println(text);
         this.output.flush();
     }
+    public void printInformation(){
+        this.server.printTeam("NAME " + this.getPlayerId() + " " + this.getName(), this.team);
+        if(this.getAgent() != null){
+            this.server.printTeam("AGENT " + this.getPlayerId() + " " + this.getAgent().toString(), this.team);
+        }
+        if(this.getReady()){
+            this.server.printTeam("READY " + this.getPlayerId(), this.team);
+        }
+    }
 
     public void kill() {
         Gun gunDrop;
@@ -147,25 +156,30 @@ public class Player extends GameObject implements Runnable {
                     if(this.server.redTeam.addPlayer(this)){ 
                         this.setTeam(this.server.redTeam);
                         this.print("JOINED"); 
-                        this.server.printAll("TEAM " + server.redTeam.getTeamSize() + " " + server.blueTeam.getTeamSize());
-                    }
+                        this.server.printAll("TEAM " + this.server.redTeam.getTeamSize() + " " + this.server.blueTeam.getTeamSize());
+                        for(Player player: this.server.redTeam.getTeam()){
+                            if(player != this) player.printInformation();
+                        }
+                    } else {System.out.println("team full");}
                     break;
                 case 1:
                     if(this.server.blueTeam.addPlayer(this)){ 
                         this.setTeam(this.server.blueTeam);
                         this.print("JOINED"); 
                         this.server.printAll("TEAM " + server.redTeam.getTeamSize() + " " + server.blueTeam.getTeamSize());
+                        for(Player player: this.server.blueTeam.getTeam()){
+                            if(player != this) player.printInformation();
+                        }
                     }
                     break;
             }
-            
         }
     }
     private void agent(String[] args){
         if(!this.ready){
             String agentName = args[0];
             this.setAgent(agentName);
-            this.server.printAll("AGENT " + this.getPlayerId() + " " + agentName);
+            this.server.printTeam("AGENT " + this.getPlayerId() + " " + agentName, this.team);
         }
     }
     private void ready(){
@@ -228,10 +242,6 @@ public class Player extends GameObject implements Runnable {
 
     public Agent getAgent() {
         return this.agent;
-    }
-
-    public boolean checkReady() {
-        return this.ready;
     }
 
     public int getCredits() {
