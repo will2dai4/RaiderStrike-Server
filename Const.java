@@ -11,5 +11,7 @@ public class Const {
 
     public static final int MAX_NAME_LENGTH = 24;
 
+    public static final String AUGUSTA_MAP_PATHNAME = "Maps/AugustaMap.txt";
+
     private Const(){}
 }

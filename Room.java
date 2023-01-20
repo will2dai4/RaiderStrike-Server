@@ -16,12 +16,16 @@ public class Room {
         this.obstacles = obstacles;
         this.doors = doors;
     }
-    
+
     public int getId(){
         return this.roomId;
     }
 
     public void setBombRoom(){
         this.isBombRoom = true;
+    }
+
+    public int[] getSpawn() {
+        return null;
     }
 }

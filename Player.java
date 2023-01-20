@@ -200,7 +200,8 @@ public class Player extends GameObject implements Runnable {
         this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.getItemsHolding()); /* TODO: edit get items holding */
     }
     private void aim(String[] args){
-        
+        int angle = Integer.parseInt(args[0]);
+        this.direction = angle;
     }
     private void move(String[] args){
         

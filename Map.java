@@ -6,6 +6,8 @@ public class Map {
     private String name;
     private int roomCount;
     private ArrayList<Room> rooms;
+    private Room defenderRoom;
+    private Room attackerRoom;
     private BufferedReader input;
 
     Map(String pathName) throws Exception{
@@ -17,14 +19,14 @@ public class Map {
     }
     public void buildMap() throws IOException{
         this.name = input.readLine();
-        this.roomCount = Integer.parseInt(input.readLine());
+        this.roomCount = Integer.parseInt(input.readLine()); 
         int defenderRoom = Integer.parseInt(input.readLine());
         int attackerRoom = Integer.parseInt(input.readLine());
         String[] bombRooms = input.readLine().split(" ");
         int bombRoom1 = Integer.parseInt(bombRooms[0]);
         int bombRoom2 = Integer.parseInt(bombRooms[1]);
 
-        for(int i=0;i<this.roomCount;i++){
+        for(int i=0;i<this.roomCount && input.ready();i++){
             String roomColor = input.readLine();
             String obsColor = input.readLine();
             String penObsColor = input.readLine();
@@ -67,6 +69,8 @@ public class Map {
                     spawnLocations[k] = Integer.parseInt(spawns[k]);
                 }
                 room = new SpawnRoom(roomCount++, width, height, obstacles, doors, spawnLocations);
+                if(i == defenderRoom) this.defenderRoom = room; else
+                if(i == attackerRoom) this.attackerRoom = room;
             } else {
                 room = new Room(roomCount++, width, height, obstacles, doors);
                 if(room.getId() == bombRoom1 || room.getId() == bombRoom2){
@@ -75,5 +79,12 @@ public class Map {
             }
             rooms.add(room);
         }
+    }
+
+    public Room getDefenderRoom(){
+        return this.defenderRoom;
+    }
+    public Room getAttackerRoom(){
+        return this.attackerRoom;
     }
 }
