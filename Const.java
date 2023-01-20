@@ -13,5 +13,10 @@ public class Const {
 
     public static final String AUGUSTA_MAP_PATHNAME = "Maps/AugustaMap.txt";
 
+    public static final int STARTING_CREDITS = 800;
+    public static final int ROUND_WIN_CREDITS = 3000;
+    public static final int ROUND_LOSE_CREDITS1 = 2000;
+    public static final int ROUND_LOSE_CREDITS2 = 2800;
+
     private Const(){}
 }

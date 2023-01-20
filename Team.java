@@ -9,30 +9,14 @@ public class Team {
     private HashSet<Agent> agentsSelected;
     private int role; // 0 - defenders, 1 - attackers
 
+    private int points;
+
     Team(int teamNum){
         this.teamId = teamNum;
         this.teamSize = 0;
         this.team = new ArrayList<>();
         this.agentsSelected = new HashSet<>();
-    }
-
-    public int getTeamNum(){
-        return this.teamId;
-    }
-    public int getTeamSize(){
-        return this.teamSize;
-    }
-    public ArrayList<Player> getTeam(){
-        return this.team;
-    }
-    public int getRole(){
-        return this.role;
-    }
-    public Player getPlayer(int index){
-        return this.team.get(index);
-    }
-    public void setRole(int roleNum){
-        this.role = roleNum;
+        this.points = 0;
     }
 
     public boolean addAgent(Agent agent){
@@ -53,5 +37,28 @@ public class Team {
     public void removePlayer(Player player){
         team.remove(player);
         teamSize--;
+    }
+
+    public void addPoint(){
+        this.points++;
+    }
+
+    public int getTeamNum(){
+        return this.teamId;
+    }
+    public int getTeamSize(){
+        return this.teamSize;
+    }
+    public ArrayList<Player> getTeam(){
+        return this.team;
+    }
+    public int getRole(){
+        return this.role;
+    }
+    public Player getPlayer(int index){
+        return this.team.get(index);
+    }
+    public void setRole(int roleNum){
+        this.role = roleNum;
     }
 }

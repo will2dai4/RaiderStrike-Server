@@ -39,7 +39,7 @@ public class Player extends GameObject implements Runnable {
         this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.output = new PrintWriter(socket.getOutputStream());
 
-        this.holdingSlot = 2;
+        this.holdingSlot = 0;
         this.defaultMovementSpeed = Const.PLAYER_MOVEMENT_SPEED;
         this.movementSpeed = defaultMovementSpeed;
 
@@ -196,24 +196,65 @@ public class Player extends GameObject implements Runnable {
 
     private void swap(String[] args){
         int slot = Integer.parseInt(args[0]);
-        this.setHolding(slot);
-        this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.getItemsHolding()); /* TODO: edit get items holding */
+        if(slot != this.holdingSlot){
+            switch(slot){
+            case 0:
+                this.setHoldingSlot(0);
+                this.getHolding().takeOut();
+                this.getHolding().setActive(true);
+                this.primaryGun.setActive(false);
+                this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.secondaryGun);
+
+            case 1:
+                if(this.primaryGun != null){
+                    this.setHoldingSlot(1);
+                    this.getHolding().takeOut();
+                    this.getHolding().setActive(true);
+                    this.secondaryGun.setActive(false);
+                    this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.primaryGun);
+                }
+            }
+        }
+        
     }
     private void aim(String[] args){
         int angle = Integer.parseInt(args[0]);
         this.direction = angle;
     }
     private void move(String[] args){
-        
+        int moveOption = Integer.parseInt(args[0]);
+        switch(moveOption){
+            case 0: // not moving
+            case 1: // up
+                this.setY((int)(this.getY() - this.movementSpeed)); break;
+            case 2: // down
+                this.setY((int)(this.getY() + this.movementSpeed)); break;
+            case 3: // left
+                this.setX((int)(this.getX() - this.movementSpeed)); break;
+            case 4: // right
+                this.setX((int)(this.getX() + this.movementSpeed)); break;
+            case 5: // up-right
+                this.setX((int)(this.getX() + (this.movementSpeed / Math.sqrt(2))));
+                this.setY((int)(this.getY() - (this.movementSpeed / Math.sqrt(2)))); break;
+            case 6: // up-left
+                this.setX((int)(this.getX() - (this.movementSpeed / Math.sqrt(2)))); 
+                this.setY((int)(this.getY() - (this.movementSpeed / Math.sqrt(2)))); break;
+            case 7: // down-left
+                this.setX((int)(this.getX() - (this.movementSpeed / Math.sqrt(2))));
+                this.setY((int)(this.getY() + (this.movementSpeed / Math.sqrt(2)))); break;
+            case 8: // down-right
+                this.setX((int)(this.getX() + (this.movementSpeed / Math.sqrt(2))));
+                this.setY((int)(this.getY() + (this.movementSpeed / Math.sqrt(2)))); break;
+        }
     }
     private void fire(){
-
+        this.getHolding().fire();
     }
     private void util(String[] args){
         
     }
     private void reload(){
-        
+        this.getHolding().reload();
     }
     private void bomb(){
         
@@ -286,10 +327,6 @@ public class Player extends GameObject implements Runnable {
             return null;
     }
 
-    public int getItemsHolding() {
-        return this.itemsHolding;
-    }
-
     public boolean getLoaded(){
         return this.loaded;
     }
@@ -358,28 +395,8 @@ public class Player extends GameObject implements Runnable {
         this.direction = (int) (Math.atan2(deltaY, deltaX));
     }
 
-    public void setHolding(int gunSlot) {
-        switch (gunSlot) {
-            case 1:
-                this.holdingSlot = gunSlot;
-            case 2:
-                this.holdingSlot = gunSlot;
-        }
-    }
-
-    public void switchWeaponUp() {
-        this.holdingSlot = (this.holdingSlot + 1) % itemsHolding;
-    }
-
-    public void switchWeaponDown() {
-        if (this.holdingSlot == 1)
-            this.holdingSlot = this.itemsHolding;
-        else
-            this.holdingSlot--;
-    }
-
-    public void setItemsHolding(int numItems) {
-        this.itemsHolding = numItems;
+    public void setHoldingSlot(int gunSlot) {
+        this.holdingSlot = gunSlot;
     }
 
     public void setLoaded(){

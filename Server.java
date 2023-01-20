@@ -17,6 +17,7 @@ public class Server {
     Team blueTeam;
     Team redTeam;
     Map map;
+    Round round;
     boolean gameStarted;
     boolean inGame;
 
@@ -31,19 +32,30 @@ public class Server {
 
         while(true){
             try {
-                while (!this.newPlayers.isEmpty()) {
-                    this.addPlayer(this.newPlayers.poll());
-                }
                 for (Player player: players.values()){
                     player.update();
                 }
-
-                if(!gameStarted && canStart()){
-                    this.start();
+                switch(this.state){
+                    case PREGAME:
+                        while (!this.newPlayers.isEmpty()) {
+                            this.addPlayer(this.newPlayers.poll());
+                        }
+                        if(!gameStarted && canStart()){
+                            this.start();
+                        }
+                        break;
+                    case LOADING:
+                        if(!inGame && allLoaded()){
+                            this.load();
+                            this.round.start();
+                        }
+                        break;
+                    case BUYPERIOD:
+                        break;
+                    case INGAME:
+                        break;
                 }
-                if(!inGame && allLoaded()){
-                    this.load();
-                }
+                
             } catch (Exception e) {e.printStackTrace();}
         }
     }
@@ -54,6 +66,7 @@ public class Server {
         this.blueTeam = new Team(1);
         this.redTeam = new Team(0);
         this.map = new Map(Const.AUGUSTA_MAP_PATHNAME); this.map.buildMap();
+        this.round = new Round();
 
         this.playerThreads = new ArrayList<Thread>();
         this.connectionHandler = new ConnectionHandler(this); this.connectionHandler.start();
@@ -112,10 +125,7 @@ public class Server {
         }
     }
     private void load(){
-        this.printAll("START");
-        this.state = this.state.nextState();
-        this.inGame = true;
-
+        // Decide team roles and set spawn locations
         int roleFlip = (int)(Math.random()*2);
         this.redTeam.setRole(roleFlip); this.blueTeam.setRole(1-roleFlip);
 
@@ -140,6 +150,18 @@ public class Server {
             attacker.setY(attackerSpawns[(i*2)+1]);
             this.printAll("PLAYER_LOCATION " + attacker.getPlayerId() + " " + attacker.getX() + " " + attacker.getY());
         }
+
+        // Give players starting items
+        for(Player player: players.values()){
+            player.setGun(0, new Gun("Robin", GunModel.Robin.getMaxAmmo()));
+            player.getHolding().setActive(true);
+            player.setCredits(Const.STARTING_CREDITS);
+        }
+
+        this.printAll("START");
+        this.printAll("ROUND_START");
+        this.state = this.state.nextState();
+        this.inGame = true;
     }
 //------------------------------------------------------------------------------------------------------
 
