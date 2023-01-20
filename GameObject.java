@@ -30,5 +30,5 @@ public abstract class GameObject{
         this.height = height;
     }
 
-    abstract public boolean collides(GameObject other);
+    abstract public boolean collides();
 }

@@ -1,6 +1,10 @@
 import java.net.*;
 import java.util.*;
+
+import javafx.scene.shape.Circle;
+
 import java.io.*;
+import java.awt.*;
 
 public class Player extends GameObject implements Runnable {
     private String name;
@@ -10,17 +14,22 @@ public class Player extends GameObject implements Runnable {
     private boolean ready;
     private boolean loaded;
 
-    private int itemsHolding;
     private Gun primaryGun;
     private Gun secondaryGun;
     private int holdingSlot;
+
     private int health;
+    private int shield;
     private boolean alive;
     private int numCredits;
+
     private boolean hasBomb;
     private double movementSpeed;
     private final double defaultMovementSpeed;
     private int direction; // degrees
+
+    private Circle hitbox;
+    private Rectangle collisionBox;
 
     private Server server;
     private Socket socket;
@@ -29,6 +38,7 @@ public class Player extends GameObject implements Runnable {
 
     private GameState state;
     private Queue<String> messages;
+    private Timer playerActionDelay; /*TODO: implement this */
 
     Player(int playerId, Socket socket, Server server) throws IOException {
         this.playerId = playerId;
@@ -39,9 +49,15 @@ public class Player extends GameObject implements Runnable {
         this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.output = new PrintWriter(socket.getOutputStream());
 
+        this.health = Const.STARTING_HEALTH;
+        this.shield = Const.STARTING_SHIELD;
         this.holdingSlot = 0;
         this.defaultMovementSpeed = Const.PLAYER_MOVEMENT_SPEED;
-        this.movementSpeed = defaultMovementSpeed;
+        this.movementSpeed = this.defaultMovementSpeed;
+
+        this.hitbox = new Circle(super.getX(), super.getY(), Const.UNIT_SIZE/2);
+        double collisionBoxSize = (Const.PLAYER_RADIUS)/(Const.COLLISION_BOX_RATIO);
+        this.collisionBox = new Rectangle((int)collisionBoxSize, (int)collisionBoxSize, this.getWidth(), this.getHeight());
 
         this.state = this.server.state;
         this.messages = new LinkedList<String>();
@@ -127,7 +143,10 @@ public class Player extends GameObject implements Runnable {
         /* TODO: Drop gun function */
     }
 
-    public boolean collides(GameObject other) {
+    public boolean collides(Obstacle obstacle) {
+        return this.collisionBox.intersects(obstacle.getHitbox());
+    }
+    public boolean collides(Room room){
         return false;
     }
 
@@ -137,7 +156,7 @@ public class Player extends GameObject implements Runnable {
 
 // ------------------------------------------------------------------------------------------------
     // Client to server commands
-    /* TODO: this */
+
     private void name(String[] args) {
         if(!this.ready){
             String playerName = "";
@@ -246,6 +265,7 @@ public class Player extends GameObject implements Runnable {
                 this.setX((int)(this.getX() + (this.movementSpeed / Math.sqrt(2))));
                 this.setY((int)(this.getY() + (this.movementSpeed / Math.sqrt(2)))); break;
         }
+
     }
     private void fire(){
         this.getHolding().fire();
@@ -256,7 +276,7 @@ public class Player extends GameObject implements Runnable {
     private void reload(){
         this.getHolding().reload();
     }
-    private void bomb(){
+    private void bomb(){ /*TODO: do this */
         
     }
     private void pickUp(String[] args){
@@ -306,6 +326,10 @@ public class Player extends GameObject implements Runnable {
         return this.health;
     }
 
+    public int getSheild(){
+        return this.shield;
+    }
+
     public double getMovementSpeed() {
         return this.movementSpeed;
     }
@@ -321,7 +345,7 @@ public class Player extends GameObject implements Runnable {
     public Gun getHolding() {
         if (this.holdingSlot == 1)
             return primaryGun;
-        if (this.holdingSlot == 2)
+        if (this.holdingSlot == 0)
             return secondaryGun;
         else
             return null;
@@ -376,11 +400,8 @@ public class Player extends GameObject implements Runnable {
         this.health = health;
     }
 
-    public void setHealth(boolean damage, int amount) {
-        if (damage)
-            this.health -= amount;
-        if (!damage)
-            this.health += amount;
+    public void setShield(int shield){
+        this.shield = shield;
     }
 
     public void setSpike(boolean hasSpike) {

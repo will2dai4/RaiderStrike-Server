@@ -71,11 +71,10 @@ public class Map {
                 room = new SpawnRoom(roomCount++, width, height, obstacles, doors, spawnLocations);
                 if(i == defenderRoom) this.defenderRoom = room; else
                 if(i == attackerRoom) this.attackerRoom = room;
+            } else if(i == bombRoom1 || i == bombRoom2){
+                room = new BombRoom(roomCount++, width, height, obstacles, doors);
             } else {
                 room = new Room(roomCount++, width, height, obstacles, doors);
-                if(room.getId() == bombRoom1 || room.getId() == bombRoom2){
-                    room.setBombRoom();
-                }
             }
             rooms.add(room);
         }
