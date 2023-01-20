@@ -129,6 +129,7 @@ public class Server {
         int roleFlip = (int)(Math.random()*2);
         this.redTeam.setRole(roleFlip); this.blueTeam.setRole(1-roleFlip);
 
+        this.printAll("START");
         int[] defenderSpawns = map.getDefenderRoom().getSpawn();
         int[] attackerSpawns = map.getAttackerRoom().getSpawn();
         Team attack; Team defend;
@@ -142,12 +143,16 @@ public class Server {
             Player defender = defend.getPlayer(i);
             defender.setX(defenderSpawns[i*2]);
             defender.setY(defenderSpawns[(i*2)+1]);
+            defender.setRoom(this.map.getDefenderRoom());
+            this.printAll("PLAYER_ROOM " + defender.getPlayerId() + " " + defender.getRoom().getId());
             this.printAll("PLAYER_LOCATION " + defender.getPlayerId() + " " + defender.getX() + " " + defender.getY());
         }
         for(int i=0;i<attack.getTeamSize();i++){
-            Player attacker = defend.getPlayer(i);
+            Player attacker = attack.getPlayer(i);
             attacker.setX(attackerSpawns[i*2]);
             attacker.setY(attackerSpawns[(i*2)+1]);
+            attacker.setRoom(this.map.getAttackerRoom());
+            this.printAll("PLAYER_ROOM " + attacker.getPlayerId() + " " + attacker.getRoom().getId());
             this.printAll("PLAYER_LOCATION " + attacker.getPlayerId() + " " + attacker.getX() + " " + attacker.getY());
         }
 
@@ -158,7 +163,6 @@ public class Server {
             player.setCredits(Const.STARTING_CREDITS);
         }
 
-        this.printAll("START");
         this.printAll("ROUND_START");
         this.state = this.state.nextState();
         this.inGame = true;

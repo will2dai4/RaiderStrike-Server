@@ -27,4 +27,10 @@ public class Obstacle extends GameObject{
     public boolean getPermeable(){
         return this.permeable;
     }
+
+    @Override
+    public boolean collides() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

@@ -28,6 +28,8 @@ public class Player extends GameObject implements Runnable {
     private final double defaultMovementSpeed;
     private int direction; // degrees
 
+    private Room room;
+
     private Circle hitbox;
     private Rectangle collisionBox;
 
@@ -210,7 +212,6 @@ public class Player extends GameObject implements Runnable {
 
     private void loaded(){
         this.setLoaded();
-        this.server.printAll("LOADED " + this.getPlayerId());
     }
 
     private void swap(String[] args){
@@ -359,6 +360,10 @@ public class Player extends GameObject implements Runnable {
         return this.ready;
     }
 
+    public Room getRoom() {
+        return room;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -422,5 +427,16 @@ public class Player extends GameObject implements Runnable {
 
     public void setLoaded(){
         this.loaded = true;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+
+    @Override
+    public boolean collides() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

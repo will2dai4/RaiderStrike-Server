@@ -5,6 +5,7 @@ import java.io.*;
 public class Map {
     private String name;
     private int roomCount;
+    private int roomId;
     private ArrayList<Room> rooms;
     private Room defenderRoom;
     private Room attackerRoom;
@@ -15,6 +16,7 @@ public class Map {
         this.input = new BufferedReader(new FileReader(file));
 
         this.roomCount = 0;
+        this.roomId = 0;
         this.rooms = new ArrayList<>();
     }
     public void buildMap() throws IOException{
@@ -68,13 +70,13 @@ public class Map {
                 for(int k = 0; k < Const.MAX_PLAYER_COUNT; k++){
                     spawnLocations[k] = Integer.parseInt(spawns[k]);
                 }
-                room = new SpawnRoom(roomCount++, width, height, obstacles, doors, spawnLocations);
+                room = new SpawnRoom(roomId++, width, height, obstacles, doors, spawnLocations);
                 if(i == defenderRoom) this.defenderRoom = room; else
                 if(i == attackerRoom) this.attackerRoom = room;
             } else if(i == bombRoom1 || i == bombRoom2){
-                room = new BombRoom(roomCount++, width, height, obstacles, doors);
+                room = new BombRoom(roomId++, width, height, obstacles, doors);
             } else {
-                room = new Room(roomCount++, width, height, obstacles, doors);
+                room = new Room(roomId++, width, height, obstacles, doors);
             }
             rooms.add(room);
         }
