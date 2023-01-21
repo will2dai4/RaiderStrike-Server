@@ -1,7 +1,7 @@
 public class Const {
     public static final int PORT = 5001;
 
-    public static final int PLAYER_RADIUS = 30;
+    public static final int PLAYER_RADIUS = 15;
     public static final double COLLISION_BOX_RATIO = 0.8;
 
     public static final int MAX_PLAYER_COUNT = 6;

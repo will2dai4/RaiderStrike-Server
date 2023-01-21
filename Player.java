@@ -49,6 +49,8 @@ public class Player extends GameObject implements Runnable {
         this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.output = new PrintWriter(socket.getOutputStream());
 
+        super.setWidth(Const.PLAYER_RADIUS*2);
+        super.setHeight(Const.PLAYER_RADIUS*2);
         this.health = Const.STARTING_HEALTH;
         this.shield = Const.STARTING_SHIELD;
         this.holdingSlot = 0;
@@ -245,6 +247,7 @@ public class Player extends GameObject implements Runnable {
     private void aim(String[] args){
         int angle = Integer.parseInt(args[0]);
         this.direction = angle;
+        this.server.printAll("PLAYER_TURN " + this.getPlayerId() + " " + this.direction);
     }
     private void move(String[] args) throws InterruptedException{
         this.moveDirection = Integer.parseInt(args[0]);
@@ -282,6 +285,10 @@ public class Player extends GameObject implements Runnable {
                 this.setY(this.getDoubleY() + (this.movementSpeed / Math.sqrt(2))); break;
         }
         if(this.moveDirection != 0){
+            if((this.getDoubleX() - this.getWidth()/2) < 0)                         { this.setX(this.getWidth()/2); }
+            if((this.getDoubleY() - this.getHeight()/2) < 0)                         { this.setY(this.getHeight()/2); }
+            if((this.getDoubleX() + this.getWidth()/2) > this.getRoom().getWidth()) { this.setX(this.getRoom().getWidth() - this.getWidth()/2); }
+            if((this.getDoubleY() + this.getHeight()/2) > this.getRoom().getHeight()) { this.setY(this.getRoom().getHeight() - this.getHeight()/2); }
             this.server.printAll("PLAYER_LOCATION " + this.getPlayerId() + " " + this.getX() + " " + this.getY());
         }
         Thread.sleep(10);
