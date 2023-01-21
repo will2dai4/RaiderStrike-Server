@@ -7,6 +7,7 @@ public class Gun {
 
     Gun(String type, int ammo) {
         this.model = GunModel.valueOf(type);
+        this.gunCooldown = new Timer();
         this.ammo = ammo;
         this.preReloadAmmo = this.ammo;
         this.active = false;
@@ -18,16 +19,19 @@ public class Gun {
         return ready;
     }
 
-    public double fire(){
+    public int[] fire(){ // return if fired and degree offset
+        int[] bullet = new int[2];
         if(this.ammo > 0 && this.ready()) {
             this.ammo--;
             this.preReloadAmmo--;
 
             gunCooldown.setTimerLength(1/(model.getFireRate()));
             gunCooldown.start();
-            return 1/(model.getFireRate());
-        }
-        return 0;
+            bullet[0] = 1;
+
+            bullet[1] = (int)((Math.random()*(this.model.getFireError()+1)) - this.model.getFireError()/2);
+        } 
+        return bullet;
     }
     public double reload(){
         if(this.ammo < model.getMaxAmmo() && this.ready()) {

@@ -111,7 +111,7 @@ public class Server {
         this.gameStarted = true;
         this.state = this.state.nextState();
 
-        this.printAll("MAP" + "\n");
+        this.printAll("MAP");
         BufferedReader mapReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("Maps/AugustaMap.txt"))));
         String mapLine = mapReader.readLine();
         while(mapLine != null){
@@ -158,7 +158,7 @@ public class Server {
 
         // Give players starting items
         for(Player player: players.values()){
-            player.setGun(0, new Gun("Robin", GunModel.Robin.getMaxAmmo()));
+            player.setGun(Const.SECONDARY_SLOT, new Gun("Robin", GunModel.Robin.getMaxAmmo()));
             player.getHolding().setActive(true);
             player.setCredits(Const.STARTING_CREDITS);
         }

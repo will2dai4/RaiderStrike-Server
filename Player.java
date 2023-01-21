@@ -13,7 +13,7 @@ public class Player extends GameObject implements Runnable {
 
     private Gun primaryGun;
     private Gun secondaryGun;
-    private int holdingSlot;
+    private int holdingSlot; // 1 -> primary gun | 2 -> secondary gun
 
     private int health;
     private int shield;
@@ -53,7 +53,7 @@ public class Player extends GameObject implements Runnable {
         super.setHeight(Const.PLAYER_RADIUS*2);
         this.health = Const.STARTING_HEALTH;
         this.shield = Const.STARTING_SHIELD;
-        this.holdingSlot = 0;
+        this.holdingSlot = 2;
         this.moving = false;
         this.moveDirection = 0;
         this.defaultMovementSpeed = Const.PLAYER_MOVEMENT_SPEED;
@@ -225,24 +225,22 @@ public class Player extends GameObject implements Runnable {
         int slot = Integer.parseInt(args[0]);
         if(slot != this.holdingSlot){
             switch(slot){
-            case 0:
-                this.setHoldingSlot(0);
-                this.getHolding().takeOut();
-                this.getHolding().setActive(true);
-                this.primaryGun.setActive(false);
-                this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.secondaryGun);
-
-            case 1:
-                if(this.primaryGun != null){
-                    this.setHoldingSlot(1);
+                case Const.PRIMARY_SLOT:
+                    if(this.primaryGun != null){
+                        this.setHoldingSlot(Const.PRIMARY_SLOT);
+                        this.getHolding().takeOut();
+                        this.getHolding().setActive(true);
+                        this.secondaryGun.setActive(false);
+                        this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.primaryGun);
+                    }
+                case 2:
+                    this.setHoldingSlot(Const.SECONDARY_SLOT);
                     this.getHolding().takeOut();
                     this.getHolding().setActive(true);
-                    this.secondaryGun.setActive(false);
-                    this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.primaryGun);
-                }
+                    this.primaryGun.setActive(false);
+                    this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.secondaryGun);
             }
         }
-        
     }
     private void aim(String[] args){
         int angle = Integer.parseInt(args[0]);
@@ -294,7 +292,11 @@ public class Player extends GameObject implements Runnable {
         Thread.sleep(10);
     }
     private void fire(){
-        this.getHolding().fire();
+        int[] bullet = this.getHolding().fire();
+        if(bullet[0] == 1){
+            int bulletDirection = bullet[1] + this.getDirection();
+            this.server.printAll("BULLET " + this.getRoom().getId() + " " + this.getPlayerId() + " " + bulletDirection);
+        }
     }
     private void util(String[] args){
         
@@ -369,9 +371,9 @@ public class Player extends GameObject implements Runnable {
     }
 
     public Gun getHolding() {
-        if (this.holdingSlot == 1)
+        if (this.holdingSlot == Const.PRIMARY_SLOT)
             return primaryGun;
-        if (this.holdingSlot == 0)
+        if (this.holdingSlot == Const.SECONDARY_SLOT)
             return secondaryGun;
         else
             return null;
@@ -415,9 +417,9 @@ public class Player extends GameObject implements Runnable {
 
     public void setGun(int slot, Gun gun) {
         switch (slot) {
-            case 0:
+            case Const.PRIMARY_SLOT:
                 this.primaryGun = gun;
-            case 1:
+            case Const.SECONDARY_SLOT:
                 this.secondaryGun = gun;
         }
     }

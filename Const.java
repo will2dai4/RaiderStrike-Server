@@ -21,5 +21,8 @@ public class Const {
     public static final int ROUND_LOSE_CREDITS1 = 2000;
     public static final int ROUND_LOSE_CREDITS2 = 2800;
 
+    public static final int PRIMARY_SLOT = 1;
+    public static final int SECONDARY_SLOT = 2;
+
     private Const(){}
 }
