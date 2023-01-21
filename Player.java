@@ -266,7 +266,7 @@ public class Player extends GameObject implements Runnable {
                 this.setX((int)(this.getX() + (this.movementSpeed / Math.sqrt(2))));
                 this.setY((int)(this.getY() + (this.movementSpeed / Math.sqrt(2)))); break;
         }
-
+        this.server.printAll("PLAYER_LOCATION " + this.getPlayerId() + " " + this.getX() + " " + this.getY());
     }
     private void fire(){
         this.getHolding().fire();
