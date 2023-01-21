@@ -1,8 +1,5 @@
 import java.net.*;
 import java.util.*;
-
-import javafx.scene.shape.Circle;
-
 import java.io.*;
 import java.awt.*;
 
@@ -24,13 +21,14 @@ public class Player extends GameObject implements Runnable {
     private int numCredits;
 
     private boolean hasBomb;
+    private boolean moving;
+    private int moveDirection;
     private double movementSpeed;
     private final double defaultMovementSpeed;
     private int direction; // degrees
 
     private Room room;
 
-    private Circle hitbox;
     private Rectangle collisionBox;
 
     private Server server;
@@ -54,10 +52,11 @@ public class Player extends GameObject implements Runnable {
         this.health = Const.STARTING_HEALTH;
         this.shield = Const.STARTING_SHIELD;
         this.holdingSlot = 0;
+        this.moving = false;
+        this.moveDirection = 0;
         this.defaultMovementSpeed = Const.PLAYER_MOVEMENT_SPEED;
         this.movementSpeed = this.defaultMovementSpeed;
 
-        this.hitbox = new Circle(super.getX(), super.getY(), Const.UNIT_SIZE/2);
         double collisionBoxSize = (Const.PLAYER_RADIUS)/(Const.COLLISION_BOX_RATIO);
         this.collisionBox = new Rectangle((int)collisionBoxSize, (int)collisionBoxSize, this.getWidth(), this.getHeight());
 
@@ -79,7 +78,7 @@ public class Player extends GameObject implements Runnable {
         }
     }
 
-    public void update(){
+    public void update() throws InterruptedException{
         while(!messages.isEmpty()){
             String[] msg = messages.poll().split(" ");
             String command = msg[0];
@@ -113,6 +112,12 @@ public class Player extends GameObject implements Runnable {
                     }
             }
         }
+        if(this.moving){
+            this.move(new String[]{this.moveDirection + ""});
+        }
+        try{
+            Thread.sleep(10);
+        } catch (InterruptedException e){ e.printStackTrace(); }
     }
 
     public void print(String text) {
@@ -241,32 +246,45 @@ public class Player extends GameObject implements Runnable {
         int angle = Integer.parseInt(args[0]);
         this.direction = angle;
     }
-    private void move(String[] args){
-        int moveOption = Integer.parseInt(args[0]);
-        switch(moveOption){
+    private void move(String[] args) throws InterruptedException{
+        this.moveDirection = Integer.parseInt(args[0]);
+        switch(this.moveDirection){
             case 0: // not moving
+                this.moving = false;
+                break;
             case 1: // up
-                this.setY((int)(this.getY() - this.movementSpeed)); break;
+                this.moving = true;
+                this.setY(this.getDoubleY() - this.movementSpeed); break;
             case 2: // down
-                this.setY((int)(this.getY() + this.movementSpeed)); break;
+                this.moving = true;
+                this.setY(this.getDoubleY() + this.movementSpeed); break;
             case 3: // left
-                this.setX((int)(this.getX() - this.movementSpeed)); break;
+                this.moving = true;
+                this.setX(this.getDoubleX() - this.movementSpeed); break;
             case 4: // right
-                this.setX((int)(this.getX() + this.movementSpeed)); break;
+                this.moving = true;
+                this.setX(this.getDoubleX() + this.movementSpeed); break;
             case 5: // up-right
-                this.setX((int)(this.getX() + (this.movementSpeed / Math.sqrt(2))));
-                this.setY((int)(this.getY() - (this.movementSpeed / Math.sqrt(2)))); break;
+                this.moving = true;
+                this.setX(this.getDoubleX() + (this.movementSpeed / Math.sqrt(2)));
+                this.setY(this.getDoubleY() - (this.movementSpeed / Math.sqrt(2))); break;
             case 6: // up-left
-                this.setX((int)(this.getX() - (this.movementSpeed / Math.sqrt(2)))); 
-                this.setY((int)(this.getY() - (this.movementSpeed / Math.sqrt(2)))); break;
+                this.moving = true;
+                this.setX(this.getDoubleX() - (this.movementSpeed / Math.sqrt(2))); 
+                this.setY(this.getDoubleY() - (this.movementSpeed / Math.sqrt(2))); break;
             case 7: // down-left
-                this.setX((int)(this.getX() - (this.movementSpeed / Math.sqrt(2))));
-                this.setY((int)(this.getY() + (this.movementSpeed / Math.sqrt(2)))); break;
+                this.moving = true;
+                this.setX(this.getDoubleX() - (this.movementSpeed / Math.sqrt(2)));
+                this.setY(this.getDoubleY() + (this.movementSpeed / Math.sqrt(2))); break;
             case 8: // down-right
-                this.setX((int)(this.getX() + (this.movementSpeed / Math.sqrt(2))));
-                this.setY((int)(this.getY() + (this.movementSpeed / Math.sqrt(2)))); break;
+                this.moving = true;
+                this.setX(this.getDoubleX() + (this.movementSpeed / Math.sqrt(2)));
+                this.setY(this.getDoubleY() + (this.movementSpeed / Math.sqrt(2))); break;
         }
-        this.server.printAll("PLAYER_LOCATION " + this.getPlayerId() + " " + this.getX() + " " + this.getY());
+        if(this.moveDirection != 0){
+            this.server.printAll("PLAYER_LOCATION " + this.getPlayerId() + " " + this.getX() + " " + this.getY());
+        }
+        Thread.sleep(10);
     }
     private void fire(){
         this.getHolding().fire();

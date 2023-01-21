@@ -1,13 +1,12 @@
 public class Const {
     public static final int PORT = 5001;
 
-    public static final int UNIT_SIZE = 20; //pixels
-    public static final int PLAYER_RADIUS = UNIT_SIZE/2;
+    public static final int PLAYER_RADIUS = 30;
     public static final double COLLISION_BOX_RATIO = 0.8;
 
     public static final int MAX_PLAYER_COUNT = 6;
     public static final int MAX_TEAM_SIZE = 3;
-    public static final double PLAYER_MOVEMENT_SPEED = 15; // pixels per second
+    public static final double PLAYER_MOVEMENT_SPEED = 6; // pixels per frame
     public static final double STARTING_VELOCITY = 30; // object velocity
     public static final double DECCELERATION = 8; // pixels/second
 

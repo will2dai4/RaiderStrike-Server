@@ -125,11 +125,11 @@ public class Server {
         }
     }
     private void load(){
+        this.printAll("START");
         // Decide team roles and set spawn locations
         int roleFlip = (int)(Math.random()*2);
         this.redTeam.setRole(roleFlip); this.blueTeam.setRole(1-roleFlip);
 
-        this.printAll("START");
         int[] defenderSpawns = map.getDefenderRoom().getSpawn();
         int[] attackerSpawns = map.getAttackerRoom().getSpawn();
         Team attack; Team defend;

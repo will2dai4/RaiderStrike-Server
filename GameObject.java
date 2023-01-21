@@ -1,14 +1,20 @@
 public abstract class GameObject{
-    private int x;
-    private int y;
+    private double x;
+    private double y;
     private int width;
     private int height;
 
     public int getX(){
-        return this.x;
+        return (int)this.x;
     }
     public int getY(){
+        return (int)this.y;
+    }
+    public double getDoubleY(){
         return this.y;
+    }
+    public double getDoubleX(){
+        return this.x;
     }
     public int getWidth(){
         return this.width;
@@ -17,10 +23,10 @@ public abstract class GameObject{
         return this.height;
     }
 
-    public void setX(int x){
+    public void setX(double x){
         this.x = x;
     }
-    public void setY(int y){
+    public void setY(double y){
         this.y = y;
     }
     public void setWidth(int width){
