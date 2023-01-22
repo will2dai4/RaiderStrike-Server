@@ -1,25 +1,25 @@
 public enum GunModel {
     // Sidearms
-    Robin(0, 25, 10, 2, 7, 10),
-    Duck(400, 10, 2, 2, 3, 60),
-    Finch(400, 30, 15, 2, 7, 8),
-    Hummingbird(600, 25, 12, 2, 10, 10),
-    Raven(600, 50, 8, 2.5, 2, 4),
+    Robin(0, 25, 10, 2, 7, 10, false),
+    Duck(400, 10, 2, 2, 3, 60, false),
+    Finch(400, 30, 15, 2, 7, 8, false),
+    Hummingbird(600, 25, 12, 2, 10, 10, true),
+    Raven(600, 50, 8, 2.5, 2, 4, false),
     // Primary
     // Light Machine Guns
-    Pecker(1000, 20, 20, 2.5, 15, 15),
-    Swift(1400, 25, 25, 3, 13, 12),
+    Pecker(1000, 20, 20, 2.5, 15, 15, true),
+    Swift(1400, 25, 25, 3, 13, 12, true),
     // Rifles
-    Crane(2000, 60, 15, 3, 3, 4),
-    Eagle(2500, 40, 25, 3, 8, 5),
+    Crane(2000, 60, 15, 3, 3, 4, false),
+    Eagle(2500, 40, 25, 3, 8, 5, true),
     // Shotguns
-    Peacock(1200, 15, 8, 3.5, 1, 40),
-    Turkey(1300, 15, 8, 3.5, 1.5, 20),
+    Peacock(1200, 15, 8, 3.5, 1, 40, false),
+    Turkey(1300, 15, 8, 3.5, 1.5, 20, false),
     // Snipers
-    Vulture(1000, 100, 8, 3, 1.5, 2),
-    Falcon(4000, 150, 1, 2, 1, 1),
+    Vulture(1000, 100, 8, 3, 1.5, 2, false),
+    Falcon(4000, 150, 1, 2, 1, 1, false),
     // Heavy Machine Guns
-    Rhea(2300, 25, 50, 4, 12, 15);
+    Rhea(2300, 25, 50, 4, 12, 15, true);
 
     private final int price;
     private final int damage;
@@ -27,14 +27,16 @@ public enum GunModel {
     private final double reloadSpeed;
     private final double fireRate;
     private final double fireError;
+    private final boolean semiAuto;
 
-    private GunModel(int price, int damage, int maxAmmo, double reloadSpeed, double fireRate, double fireError) {
+    private GunModel(int price, int damage, int maxAmmo, double reloadSpeed, double fireRate, double fireError, boolean semiAuto) {
         this.price = price;
         this.damage = damage;
         this.maxAmmo = maxAmmo;
         this.reloadSpeed = reloadSpeed;
         this.fireRate = fireRate;
         this.fireError = fireError;
+        this.semiAuto = semiAuto;
     }
 
     public int getPrice(){
@@ -54,5 +56,8 @@ public enum GunModel {
     }
     public double getFireError(){
         return this.fireError;
+    }
+    public boolean getSemiAuto(){
+        return this.semiAuto;
     }
 }

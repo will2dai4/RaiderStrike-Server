@@ -22,6 +22,7 @@ public class Player extends GameObject implements Runnable {
 
     private boolean hasBomb;
     private boolean moving;
+    private boolean firing;
     private int moveDirection;
     private double movementSpeed;
     private final double defaultMovementSpeed;
@@ -55,6 +56,7 @@ public class Player extends GameObject implements Runnable {
         this.shield = Const.STARTING_SHIELD;
         this.holdingSlot = 2;
         this.moving = false;
+        this.firing = false;
         this.moveDirection = 0;
         this.defaultMovementSpeed = Const.PLAYER_MOVEMENT_SPEED;
         this.movementSpeed = this.defaultMovementSpeed;
@@ -102,7 +104,7 @@ public class Player extends GameObject implements Runnable {
                         case "SWAP": this.swap(args); break;
                         case "AIM": this.aim(args); break;
                         case "MOVE": this.move(args); break;
-                        case "FIRE": this.fire(); break;
+                        case "FIRE": this.fire(args); break;
                         case "UTIL": this.util(args); break;
                         case "RELOAD": this.reload(); break;
                         case "BOMB": this.bomb(); break;
@@ -114,9 +116,18 @@ public class Player extends GameObject implements Runnable {
                     }
             }
         }
+
         if(this.moving){
             this.move(new String[]{this.moveDirection + ""});
         }
+        if(this.firing){
+            int[] bullet = this.getHolding().fire();
+            if(bullet[0] == 1){
+                int bulletDirection = bullet[1] + this.getDirection();
+                this.server.printAll("BULLET " + this.getRoom().getId() + " " + this.getPlayerId() + " " + bulletDirection);
+            }
+        }
+        
         try{
             Thread.sleep(10);
         } catch (InterruptedException e){ e.printStackTrace(); }
@@ -154,9 +165,6 @@ public class Player extends GameObject implements Runnable {
 
     public boolean collides(Obstacle obstacle) {
         return this.collisionBox.intersects(obstacle.getHitbox());
-    }
-    public boolean collides(Room room){
-        return false;
     }
 
     public void resetMovementSpeed() {
@@ -289,13 +297,23 @@ public class Player extends GameObject implements Runnable {
             if((this.getDoubleY() + this.getHeight()/2) > this.getRoom().getHeight()) { this.setY(this.getRoom().getHeight() - this.getHeight()/2); }
             this.server.printAll("PLAYER_LOCATION " + this.getPlayerId() + " " + this.getX() + " " + this.getY());
         }
+
+        for(Obstacle obstacle: this.room.getObstacles()){ /*TODO: this */
+
+        }
         Thread.sleep(10);
     }
-    private void fire(){
-        int[] bullet = this.getHolding().fire();
-        if(bullet[0] == 1){
-            int bulletDirection = bullet[1] + this.getDirection();
-            this.server.printAll("BULLET " + this.getRoom().getId() + " " + this.getPlayerId() + " " + bulletDirection);
+    private void fire(String[] args){
+        int toggle = Integer.parseInt(args[0]);
+
+        if(this.getHolding().model.getSemiAuto()) {
+            this.firing = (toggle == 1);
+        } else if(toggle == 1){
+            int[] bullet = this.getHolding().fire();
+            if(bullet[0] == 1){
+                int bulletDirection = bullet[1] + this.getDirection();
+                this.server.printAll("BULLET " + this.getRoom().getId() + " " + this.getPlayerId() + " " + bulletDirection);
+            }
         }
     }
     private void util(String[] args){

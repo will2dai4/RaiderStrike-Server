@@ -40,4 +40,8 @@ public class Room {
     public int[] getSpawn() {
         return null;
     }
+
+    public ArrayList<Obstacle> getObstacles(){
+        return this.obstacles;
+    }
 }
