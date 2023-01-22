@@ -83,6 +83,7 @@ public class Server {
         for(Player player: players.values()){
             this.printAll("NAME " + player.getPlayerId() + " " + player.getName());
             this.printAll("AGENT " + player.getPlayerId() + " " + player.getAgent().toString());
+            this.printAll("PLAYER_TEAM " + player.getPlayerId() + " " + player.getTeam());
         }
     }
     private void load(){

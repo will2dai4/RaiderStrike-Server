@@ -212,7 +212,7 @@ public class Player extends GameObject implements Runnable {
                     } else { System.out.println("team full"); }
                     break;
             }
-            this.server.printAll("PLAYER_TEAM " + this.getPlayerId() + " " + this.team.getTeamNum());
+            this.server.printAll("PLAYER_TEAM " + this.getPlayerId() + " " + this.getTeam());
         }
     }
     private void agent(String[] args){
