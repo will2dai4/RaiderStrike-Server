@@ -82,6 +82,9 @@ public class Map {
         }
     }
 
+    public String getName() {
+        return this.name;
+    }
     public Room getDefenderRoom(){
         return this.defenderRoom;
     }

@@ -127,7 +127,7 @@ public class Player extends GameObject implements Runnable {
             int[] bullet = this.getHolding().fire();
             if(bullet[0] == 1){
                 int bulletDirection = bullet[1] + this.getDirection();
-                this.server.printAll("BULLET " + this.getRoom().getId() + " " + this.getPlayerId() + " " + bulletDirection);
+                this.server.shoot(new BulletTracer(this.getDoubleX(), this.getDoubleY(), bulletDirection), this);
             }
         }
         
@@ -199,7 +199,7 @@ public class Player extends GameObject implements Runnable {
                         for(Player player: this.server.redTeam.getTeam()){
                             if(player != this) player.printInformation();
                         }
-                    } else {System.out.println("team full");}
+                    } else { System.out.println("team full"); }
                     break;
                 case 1:
                     if(this.server.blueTeam.addPlayer(this)){ 
@@ -209,9 +209,10 @@ public class Player extends GameObject implements Runnable {
                         for(Player player: this.server.blueTeam.getTeam()){
                             if(player != this) player.printInformation();
                         }
-                    }
+                    } else { System.out.println("team full"); }
                     break;
             }
+            this.server.printAll("PLAYER_TEAM " + this.getPlayerId() + " " + this.team.getTeamNum());
         }
     }
     private void agent(String[] args){
@@ -345,8 +346,8 @@ public class Player extends GameObject implements Runnable {
         Thread.sleep(10);
     }
     private void fire(String[] args){
-        int toggle = Integer.parseInt(args[0]);
-        int[] bullet = new int[2];
+        int toggle = Integer.parseInt(args[0]); // shooting press and release
+        int[] bullet;
 
         if(this.getHolding().model.getSemiAuto()) {
             this.firing = (toggle == 1);
@@ -354,11 +355,9 @@ public class Player extends GameObject implements Runnable {
             bullet = this.getHolding().fire();
             if(bullet[0] == 1){
                 int bulletDirection = bullet[1] + this.getDirection();
-                this.server.printAll("BULLET " + this.getRoom().getId() + " " + this.getPlayerId() + " " + bulletDirection);
+                this.server.shoot(new BulletTracer(this.getDoubleX(), this.getDoubleY(), bulletDirection), this);
             }
         }
-
-
     }
     private void util(String[] args){
         

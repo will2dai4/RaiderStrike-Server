@@ -78,14 +78,7 @@ public class Server {
         this.printAll("START");  
         this.gameStarted = true;
         this.state = this.state.nextState();
-
-        this.printAll("MAP");
-        BufferedReader mapReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("Maps/AugustaMap.txt"))));
-        String mapLine = mapReader.readLine();
-        while(mapLine != null){
-            this.printAll(mapLine);
-            mapLine = mapReader.readLine();
-        }
+        this.printAll("MAP " + this.map.getName());
 
         for(Player player: players.values()){
             this.printAll("NAME " + player.getPlayerId() + " " + player.getName());
@@ -178,13 +171,10 @@ public class Server {
         roomObjects.addAll(player.getRoom().getPlayers());
 
         GameObject hit = tracer.hits(roomObjects);
-        /*TODO: make line class to fix this */
-        Line horHit = new Line(hit.getDoubleX(), hit.getDoubleY() + hit.getHeight(), hit.getDoubleX() + hit.getWidth(), hit.getDoubleY() + hit.getHeight()/2);
-        Line vertHit = new Line(hit.getDoubleX() + hit.getWidth()/2, hit.getDoubleY(), hit.getDoubleX() + hit.getWidth()/2, hit.getDoubleY() + hit.getWidth()/2);
+        if(hit != null){
+            tracer.closestIntersection(hit);
+        } 
 
-        if(tracer.getX1() > vertHit.get){
-
-        }
         this.printAll("BULLET " + player.getRoom().getId() + " " + tracer.getX1() + " " + tracer.getY1() + " " + tracer.getX2() + " " + tracer.getY2());
     }
 

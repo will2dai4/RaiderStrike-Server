@@ -74,8 +74,54 @@ public class BulletTracer extends Line2D{
         return null;
     }
 
-    public int[] closestIntersection(GameObject object){
-        /*TODO: this */
+    public void closestIntersection(GameObject object){ // finds closest bullet-object collision points
+        Line2D topLine = new Line2D.Double(object.getX(), object.getY(), object.getX() + object.getWidth(), object.getY());
+        Line2D botLine = new Line2D.Double(object.getX(), object.getY() + object.getHeight(), object.getX() + object.getWidth(), object.getY() + object.getHeight());
+        Line2D leftLine = new Line2D.Double(object.getX(), object.getY(), object.getX(), object.getY() + object.getHeight());
+        Line2D rightLine = new Line2D.Double(object.getX() + object.getWidth(), object.getY(), object.getX() + object.getWidth(), object.getY() + object.getHeight());
+        int centerX = object.getX() + object.getWidth()/2;
+        int centerY = object.getY() + object.getHeight()/2;
+        
+        ArrayList<Line2D> intersectList = new ArrayList<>();
+        if(this.intersectsLine(topLine)) intersectList.add(topLine);
+        if(this.intersectsLine(botLine)) intersectList.add(botLine);
+        if(this.intersectsLine(leftLine)) intersectList.add(leftLine);
+        if(this.intersectsLine(rightLine)) intersectList.add(rightLine);
+
+        ArrayList<Line2D> possibleFirstIntersect = new ArrayList<>();
+        if(this.getX1() >= centerX){
+            possibleFirstIntersect.add(rightLine);
+            if(this.getY1() >= centerY){
+                possibleFirstIntersect.add(botLine);
+            } else {
+                possibleFirstIntersect.add(topLine);
+            }
+        } else {
+            possibleFirstIntersect.add(leftLine);
+            if(this.getY1() >= centerY){
+                possibleFirstIntersect.add(botLine);
+            } else {
+                possibleFirstIntersect.add(topLine);
+            }
+        }
+
+        intersectList.retainAll(possibleFirstIntersect);
+        Line2D intersectionLine = intersectList.get(0);
+
+        double thisSlope = (this.endY - this.startY) / (this.endX - this.startX);
+        double thisB = this.startY - (thisSlope*this.startX);
+
+        int intersectionX, intersectionY;
+        if(intersectionLine == topLine || intersectionLine == botLine){
+            intersectionX = (int)((intersectionLine.getY1() - thisB) / thisSlope);
+            intersectionY = (int)((thisSlope*intersectionX) + thisB);
+        } else {
+            intersectionY = (int)((thisSlope*intersectionLine.getX1()) + thisB);
+            intersectionX = (int)((intersectionY - thisB) / thisSlope);
+        }
+
+        this.endX = intersectionX;
+        this.endY = intersectionY;
     }
 
 
