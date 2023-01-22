@@ -1,6 +1,8 @@
 import java.util.*;
 import java.io.*;
 import java.net.*;
+import java.awt.geom.*;
+import java.awt.*;
 
 public class Server {
     ServerSocket serverSocket;
@@ -71,41 +73,7 @@ public class Server {
         this.playerThreads = new ArrayList<Thread>();
         this.connectionHandler = new ConnectionHandler(this); this.connectionHandler.start();
     }
-    private boolean canStart(){
-        if(this.players.size() >= 2){
-            for(Player player: this.players.values()){
-                if(!player.getReady()){
-                    return false;
-                }
-            } 
-
-            return true;
-        }
-        return false;
-        /* 
-        if(this.players.size() == Const.MAX_PLAYER_COUNT){
-            for(Player player: this.players.values()){
-                if(!player.getReady()){
-                    return false;
-                }
-            } 
-            return true;
-        }
-        return false;
-        */ // TODO: reimplement with allLoaded() when done testing
-    }
-    private boolean allLoaded(){
-        if(this.players.size() >= 2){
-            for(Player player: this.players.values()){
-                if(!player.getLoaded()){
-                    return false;
-                }
-            } 
-            return true;
-        }
-        return false;
-    }
-
+    
     private void start() throws IOException{
         this.printAll("START");  
         this.gameStarted = true;
@@ -144,6 +112,7 @@ public class Server {
             defender.setX(defenderSpawns[i*2]);
             defender.setY(defenderSpawns[(i*2)+1]);
             defender.setRoom(this.map.getDefenderRoom());
+            this.map.getDefenderRoom().addPlayer(defender);
             this.printAll("PLAYER_ROOM " + defender.getPlayerId() + " " + defender.getRoom().getId());
             this.printAll("PLAYER_LOCATION " + defender.getPlayerId() + " " + defender.getX() + " " + defender.getY());
         }
@@ -152,6 +121,7 @@ public class Server {
             attacker.setX(attackerSpawns[i*2]);
             attacker.setY(attackerSpawns[(i*2)+1]);
             attacker.setRoom(this.map.getAttackerRoom());
+            this.map.getAttackerRoom().addPlayer(attacker);
             this.printAll("PLAYER_ROOM " + attacker.getPlayerId() + " " + attacker.getRoom().getId());
             this.printAll("PLAYER_LOCATION " + attacker.getPlayerId() + " " + attacker.getX() + " " + attacker.getY());
         }
@@ -167,6 +137,57 @@ public class Server {
         this.state = this.state.nextState();
         this.inGame = true;
     }
+    
+    private boolean canStart(){
+        if(this.players.size() >= 2){
+            for(Player player: this.players.values()){
+                if(!player.getReady()){
+                    return false;
+                }
+            } 
+
+            return true;
+        }
+        return false;
+        /* 
+        if(this.players.size() == Const.MAX_PLAYER_COUNT){
+            for(Player player: this.players.values()){
+                if(!player.getReady()){
+                    return false;
+                }
+            } 
+            return true;
+        }
+        return false;
+        */ // TODO: reimplement with allLoaded() when done testing
+    }
+    private boolean allLoaded(){
+        if(this.players.size() >= 2){
+            for(Player player: this.players.values()){
+                if(!player.getLoaded()){
+                    return false;
+                }
+            } 
+            return true;
+        }
+        return false;
+    }
+    public void shoot(BulletTracer tracer, Player player){
+        ArrayList<GameObject> roomObjects = new ArrayList<>();
+        roomObjects.addAll(player.getRoom().getObstacles());
+        roomObjects.addAll(player.getRoom().getPlayers());
+
+        GameObject hit = tracer.hits(roomObjects);
+        /*TODO: make line class to fix this */
+        Line horHit = new Line(hit.getDoubleX(), hit.getDoubleY() + hit.getHeight(), hit.getDoubleX() + hit.getWidth(), hit.getDoubleY() + hit.getHeight()/2);
+        Line vertHit = new Line(hit.getDoubleX() + hit.getWidth()/2, hit.getDoubleY(), hit.getDoubleX() + hit.getWidth()/2, hit.getDoubleY() + hit.getWidth()/2);
+
+        if(tracer.getX1() > vertHit.get){
+
+        }
+        this.printAll("BULLET " + player.getRoom().getId() + " " + tracer.getX1() + " " + tracer.getY1() + " " + tracer.getX2() + " " + tracer.getY2());
+    }
+
 //------------------------------------------------------------------------------------------------------
 
     public void printAll(String text){

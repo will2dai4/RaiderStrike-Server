@@ -23,10 +23,4 @@ public class Door extends GameObject{
     public boolean collides(GameObject other) {
         return false;
     }
-
-    @Override
-    public boolean collides() {
-        // TODO Auto-generated method stub
-        return false;
-    }
 }

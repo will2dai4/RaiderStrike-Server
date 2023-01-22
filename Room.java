@@ -9,6 +9,7 @@ public class Room {
 
     private final ArrayList<Obstacle> obstacles;
     private final ArrayList<Door> doors;
+    private final ArrayList<Player> players;
 
     private boolean isBombRoom;
 
@@ -20,6 +21,7 @@ public class Room {
 
         this.obstacles = obstacles;
         this.doors = doors;
+        this.players = new ArrayList<>();
     }
 
     public int getWidth(){
@@ -41,7 +43,22 @@ public class Room {
         return null;
     }
 
+    public void addPlayer(Player player){
+        this.players.add(player);
+    }
+
+    public Player removePlayer(Player player){
+        if(this.players.remove(player)){
+            return player;
+        }
+        return null;
+    }
+
     public ArrayList<Obstacle> getObstacles(){
         return this.obstacles;
+    }
+
+    public ArrayList<Player> getPlayers(){
+        return this.players;
     }
 }

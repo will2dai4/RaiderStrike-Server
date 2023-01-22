@@ -1,9 +1,11 @@
 import java.net.*;
 import java.util.*;
+import java.awt.geom.*;
 import java.io.*;
 import java.awt.*;
 
 public class Player extends GameObject implements Runnable {
+    // x and y are player center
     private String name;
     private Team team; // 0 -> Red Team | 1 -> Blue Team
     private int playerId;
@@ -30,7 +32,7 @@ public class Player extends GameObject implements Runnable {
 
     private Room room;
 
-    private Rectangle collisionBox;
+    private int radius;
 
     private Server server;
     private Socket socket;
@@ -50,8 +52,8 @@ public class Player extends GameObject implements Runnable {
         this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.output = new PrintWriter(socket.getOutputStream());
 
-        super.setWidth(Const.PLAYER_RADIUS*2);
-        super.setHeight(Const.PLAYER_RADIUS*2);
+        this.setWidth(Const.PLAYER_RADIUS*2);
+        this.setHeight(Const.PLAYER_RADIUS*2);
         this.health = Const.STARTING_HEALTH;
         this.shield = Const.STARTING_SHIELD;
         this.holdingSlot = 2;
@@ -61,8 +63,9 @@ public class Player extends GameObject implements Runnable {
         this.defaultMovementSpeed = Const.PLAYER_MOVEMENT_SPEED;
         this.movementSpeed = this.defaultMovementSpeed;
 
+        this.radius = this.getWidth()/2;
         double collisionBoxSize = (Const.PLAYER_RADIUS)/(Const.COLLISION_BOX_RATIO);
-        this.collisionBox = new Rectangle((int)collisionBoxSize, (int)collisionBoxSize, this.getWidth(), this.getHeight());
+        this.hitbox = new Rectangle(this.getX()-this.radius, this.getY()-this.radius, (int)collisionBoxSize, (int)collisionBoxSize);
 
         this.state = this.server.state;
         this.messages = new LinkedList<String>();
@@ -164,9 +167,9 @@ public class Player extends GameObject implements Runnable {
     }
 
     public boolean collides(Obstacle obstacle) {
-        return this.collisionBox.intersects(obstacle.getHitbox());
+        return this.hitbox.intersects(obstacle.getHitbox());
     }
-
+    
     public void resetMovementSpeed() {
         this.movementSpeed = defaultMovementSpeed;
     }
@@ -291,30 +294,71 @@ public class Player extends GameObject implements Runnable {
                 this.setY(this.getDoubleY() + (this.movementSpeed / Math.sqrt(2))); break;
         }
         if(this.moveDirection != 0){
-            if((this.getDoubleX() - this.getWidth()/2) < 0)                         { this.setX(this.getWidth()/2); }
-            if((this.getDoubleY() - this.getHeight()/2) < 0)                         { this.setY(this.getHeight()/2); }
-            if((this.getDoubleX() + this.getWidth()/2) > this.getRoom().getWidth()) { this.setX(this.getRoom().getWidth() - this.getWidth()/2); }
-            if((this.getDoubleY() + this.getHeight()/2) > this.getRoom().getHeight()) { this.setY(this.getRoom().getHeight() - this.getHeight()/2); }
+            if((this.getDoubleX() - this.radius) < 0)                         { this.setX(this.radius); }
+            if((this.getDoubleY() - this.radius) < 0)                         { this.setY(this.radius); }
+            if((this.getDoubleX() + this.radius) > this.getRoom().getWidth()) { this.setX(this.getRoom().getWidth() - this.radius); }
+            if((this.getDoubleY() + this.radius) > this.getRoom().getHeight()) { this.setY(this.getRoom().getHeight() - this.radius); }
+
+            for(Obstacle obstacle: this.room.getObstacles()){
+                if(this.collides(obstacle)){
+                    Rectangle2D collision = this.hitbox.createIntersection(obstacle.getHitbox());
+                    switch(this.moveDirection){
+                        case 1: // up
+                            this.setY(obstacle.getDoubleY() + obstacle.getHeight() + this.radius); break;
+                        case 2: // down
+                            this.setY(obstacle.getDoubleY() + this.radius); break;
+                        case 3: // left
+                            this.setX(obstacle.getDoubleX() + obstacle.getWidth() + this.radius); break;
+                        case 4: // right
+                            this.setX(obstacle.getDoubleX() + this.getWidth()); break;
+                        case 5:
+                            if(collision.getWidth() >= collision.getHeight()){ 
+                                this.setY(obstacle.getDoubleY() + obstacle.getHeight() + this.radius); // up
+                            } else {
+                                this.setX(obstacle.getDoubleX() + this.getWidth()); // right
+                            } break;
+                        case 6:
+                            if(collision.getWidth() >= collision.getHeight()){
+                                this.setY(obstacle.getDoubleY() + obstacle.getHeight() + this.radius); // up
+                            } else {
+                                this.setX(obstacle.getDoubleX() + obstacle.getWidth() + this.radius); // left
+                            } break;
+                        case 7:
+                            if(collision.getWidth() >= collision.getHeight()){
+                                this.setY(obstacle.getDoubleY() + this.radius); // down
+                            } else {
+                                this.setX(obstacle.getDoubleX() + obstacle.getWidth() + this.radius); // left
+                            } break;
+                        case 8:
+                            if(collision.getWidth() >= collision.getHeight()){
+                                this.setY(obstacle.getDoubleY() + this.radius); // down
+                            } else {
+                                this.setX(obstacle.getDoubleX() + this.getWidth()); // right
+                            } break;
+                    }
+                }
+            }
+
             this.server.printAll("PLAYER_LOCATION " + this.getPlayerId() + " " + this.getX() + " " + this.getY());
         }
 
-        for(Obstacle obstacle: this.room.getObstacles()){ /*TODO: this */
-
-        }
         Thread.sleep(10);
     }
     private void fire(String[] args){
         int toggle = Integer.parseInt(args[0]);
+        int[] bullet = new int[2];
 
         if(this.getHolding().model.getSemiAuto()) {
             this.firing = (toggle == 1);
         } else if(toggle == 1){
-            int[] bullet = this.getHolding().fire();
+            bullet = this.getHolding().fire();
             if(bullet[0] == 1){
                 int bulletDirection = bullet[1] + this.getDirection();
                 this.server.printAll("BULLET " + this.getRoom().getId() + " " + this.getPlayerId() + " " + bulletDirection);
             }
         }
+
+
     }
     private void util(String[] args){
         
@@ -335,13 +379,27 @@ public class Player extends GameObject implements Runnable {
 
 // ------------------------------------------------------------------------------------------------
     // getters and setters
+    public void setX(double x){
+        super.setX(x);
+        this.hitbox.setRect(x-this.radius, this.hitbox.getY(), this.hitbox.getWidth(), this.hitbox.getHeight());
+    }
+    public void setY(double y){
+        super.setY(y);
+        this.hitbox.setRect(this.hitbox.getX(), y-this.radius, this.hitbox.getWidth(), this.hitbox.getHeight());
+    }
 
     public String getName() {
         return this.name;
     }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getTeam() {
         return this.team.getTeamNum();
+    }
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public int getPlayerId() {
@@ -351,41 +409,37 @@ public class Player extends GameObject implements Runnable {
     public Agent getAgent() {
         return this.agent;
     }
+    public void setAgent(String agentName) {
+        this.agent = Agent.valueOf(agentName);
+    }
 
     public int getCredits() {
         return this.numCredits;
+    }
+    public void setCredits(int credits) {
+        this.numCredits = credits;
     }
 
     public boolean getAlive() {
         return this.alive;
     }
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
 
     public Gun getPrimGun() {
         return this.primaryGun;
     }
-
     public Gun getSecGun() {
         return this.secondaryGun;
     }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public int getSheild(){
-        return this.shield;
-    }
-
-    public double getMovementSpeed() {
-        return this.movementSpeed;
-    }
-
-    public boolean checkSpike() {
-        return this.hasBomb;
-    }
-
-    public int getDirection() {
-        return this.direction;
+    public void setGun(int slot, Gun gun) {
+        switch (slot) {
+            case Const.PRIMARY_SLOT:
+                this.primaryGun = gun;
+            case Const.SECONDARY_SLOT:
+                this.secondaryGun = gun;
+        }
     }
 
     public Gun getHolding() {
@@ -396,92 +450,63 @@ public class Player extends GameObject implements Runnable {
         else
             return null;
     }
+    public void setHoldingSlot(int gunSlot) {
+        this.holdingSlot = gunSlot;
+    }
+
+    public int getHealth() {
+        return this.health;
+    }
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getSheild(){
+        return this.shield;
+    }
+    public void setShield(int shield){
+        this.shield = shield;
+    }
+
+    public double getMovementSpeed() {
+        return this.movementSpeed;
+    }
+    public void setMovementSpeed(double newSpeed) {
+        this.movementSpeed = newSpeed;
+    }
+
+    public int getDirection() {
+        return this.direction;
+    }
+    public void setDirection(int degrees) {
+        this.direction = degrees % 360;
+    }
+
+    public boolean checkSpike() {
+        return this.hasBomb;
+    }
+    public void setSpike(boolean hasSpike) {
+        this.hasBomb = hasSpike;
+    }
 
     public boolean getLoaded(){
         return this.loaded;
+    }
+    public void setLoaded(){
+        this.loaded = true;
     }
 
     public boolean getReady(){
         return this.ready;
     }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }
-
-    public void setAgent(String agentName) {
-        this.agent = Agent.valueOf(agentName);
-    }
-
     public void setReady() {
         this.ready = true;
     }
 
-    public void setCredits(int credits) {
-        this.numCredits = credits;
+    public Room getRoom() {
+        return room;
     }
-
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
-
-    public void setGun(int slot, Gun gun) {
-        switch (slot) {
-            case Const.PRIMARY_SLOT:
-                this.primaryGun = gun;
-            case Const.SECONDARY_SLOT:
-                this.secondaryGun = gun;
-        }
-    }
-
-    public void setMovementSpeed(double newSpeed) {
-        this.movementSpeed = newSpeed;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public void setShield(int shield){
-        this.shield = shield;
-    }
-
-    public void setSpike(boolean hasSpike) {
-        this.hasBomb = hasSpike;
-    }
-
-    public void setDirection(int degrees) {
-        this.direction = degrees % 360;
-    }
-
-    public void setDirection(int deltaX, int deltaY) {
-        this.direction = (int) (Math.atan2(deltaY, deltaX));
-    }
-
-    public void setHoldingSlot(int gunSlot) {
-        this.holdingSlot = gunSlot;
-    }
-
-    public void setLoaded(){
-        this.loaded = true;
-    }
-
     public void setRoom(Room room) {
         this.room = room;
-    }
-
-
-    @Override
-    public boolean collides() {
-        // TODO Auto-generated method stub
-        return false;
     }
 }

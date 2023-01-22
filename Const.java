@@ -24,5 +24,7 @@ public class Const {
     public static final int PRIMARY_SLOT = 1;
     public static final int SECONDARY_SLOT = 2;
 
+    public static final int DEFAULT_BULLET_DISTANCE = 2000;
+
     private Const(){}
 }
