@@ -29,7 +29,7 @@ public class Gun {
             gunCooldown.start();
             bullet[0] = 1;
 
-            bullet[1] = (int)((Math.random()*(this.model.getFireError()+1)) - this.model.getFireError()/2);
+            bullet[1] = (int)((Math.random()*(this.model.getFireError()+1)) - (this.model.getFireError()/2));
         } 
         return bullet;
     }

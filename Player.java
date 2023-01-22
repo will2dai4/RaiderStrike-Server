@@ -65,7 +65,6 @@ public class Player extends GameObject implements Runnable {
 
         this.radius = this.getWidth()/2;
         double collisionBoxSize = (Const.PLAYER_RADIUS)/(Const.COLLISION_BOX_RATIO);
-        this.hitbox = new Rectangle(this.getX()-this.radius, this.getY()-this.radius, (int)collisionBoxSize, (int)collisionBoxSize);
 
         this.state = this.server.state;
         this.messages = new LinkedList<String>();
@@ -127,7 +126,7 @@ public class Player extends GameObject implements Runnable {
             int[] bullet = this.getHolding().fire();
             if(bullet[0] == 1){
                 int bulletDirection = bullet[1] + this.getDirection();
-                this.server.shoot(new BulletTracer(this, bulletDirection), this);
+                this.server.shoot(new BulletTracer(this.getX(), this.getY(), bulletDirection), this);
             }
         }
         
@@ -355,7 +354,7 @@ public class Player extends GameObject implements Runnable {
             bullet = this.getHolding().fire();
             if(bullet[0] == 1){
                 int bulletDirection = bullet[1] + this.getDirection();
-                this.server.shoot(new BulletTracer(this, bulletDirection), this);
+                this.server.shoot(new BulletTracer(this.getX(), this.getY(), bulletDirection), this);
             }
         }
     }
@@ -378,13 +377,17 @@ public class Player extends GameObject implements Runnable {
 
 // ------------------------------------------------------------------------------------------------
     // getters and setters
+    @Override
     public void setX(double x){
-        super.setX(x);
-        this.hitbox.setRect(x-this.radius, this.hitbox.getY(), this.hitbox.getWidth(), this.hitbox.getHeight());
+        this.x = x;
+        this.hitbox.setRect(x - this.radius, this.hitbox.getY(), this.hitbox.getWidth(), this.hitbox.getHeight());
+        System.out.println(this.y + " " + this.hitbox.getY()+this.radius);
     }
+    @Override
     public void setY(double y){
-        super.setY(y);
-        this.hitbox.setRect(this.hitbox.getX(), y-this.radius, this.hitbox.getWidth(), this.hitbox.getHeight());
+        this.y = y;
+        this.hitbox.setRect(this.hitbox.getX(), y - this.radius, this.hitbox.getWidth(), this.hitbox.getHeight());
+        System.out.println(this.y + " " + this.hitbox.getY()+this.radius);
     }
 
     public String getName() {

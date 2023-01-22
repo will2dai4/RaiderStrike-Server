@@ -3,7 +3,6 @@ import java.awt.*;
 import java.util.*;
 
 public class BulletTracer extends Line2D{
-    private Player origin;
     private double startX;
     private double startY;
     private double endX;
@@ -11,13 +10,13 @@ public class BulletTracer extends Line2D{
 
     private int direction;
 
-    BulletTracer(Player player, int degrees){
-        this.startX = player.getDoubleX();
-        this.startY = player.getDoubleY();
+    BulletTracer(int x, int y, int degrees){
+        this.startX = x;
+        this.startY = y;
 
         this.direction = degrees;
         this.endX = (Const.DEFAULT_BULLET_DISTANCE)*Math.cos((this.direction*Math.PI)/180);
-        this.endY = (Const.DEFAULT_BULLET_DISTANCE)*Math.sin((this.direction*Math.PI)/180)*(-1);
+        this.endY = (Const.DEFAULT_BULLET_DISTANCE)*Math.sin((this.direction*Math.PI)/180)*(-1); // -1 accounts for java's flipped y-axis
     }
     
     public double getX1() {
@@ -107,22 +106,25 @@ public class BulletTracer extends Line2D{
         }
 
         intersectList.retainAll(possibleFirstIntersect);
-        Line2D intersectionLine = intersectList.get(0);
 
-        double thisSlope = (this.endY - this.startY) / (this.endX - this.startX);
-        double thisB = this.startY - (thisSlope*this.startX);
+        if(intersectList.isEmpty()){
+            Line2D intersectionLine = intersectList.get(0);
 
-        int intersectionX, intersectionY;
-        if(intersectionLine == topLine || intersectionLine == botLine){
-            intersectionX = (int)((intersectionLine.getY1() - thisB) / thisSlope);
-            intersectionY = (int)((thisSlope*intersectionX) + thisB);
-        } else {
-            intersectionY = (int)((thisSlope*intersectionLine.getX1()) + thisB);
-            intersectionX = (int)((intersectionY - thisB) / thisSlope);
+            double thisSlope = (this.endY - this.startY) / (this.endX - this.startX);
+            double thisB = this.startY - (thisSlope*this.startX);
+
+            int intersectionX, intersectionY;
+            if(intersectionLine == topLine || intersectionLine == botLine){
+                intersectionX = (int)((intersectionLine.getY1() - thisB) / thisSlope);
+                intersectionY = (int)((thisSlope*intersectionX) + thisB);
+            } else {
+                intersectionY = (int)((thisSlope*intersectionLine.getX1()) + thisB);
+                intersectionX = (int)((intersectionY - thisB) / thisSlope);
+            }
+
+            this.endX = intersectionX;
+            this.endY = intersectionY;
         }
-
-        this.endX = intersectionX;
-        this.endY = intersectionY;
     }
 
 
