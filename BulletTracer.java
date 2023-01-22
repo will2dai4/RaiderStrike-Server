@@ -3,6 +3,7 @@ import java.awt.*;
 import java.util.*;
 
 public class BulletTracer extends Line2D{
+    private Player origin;
     private double startX;
     private double startY;
     private double endX;
@@ -10,13 +11,13 @@ public class BulletTracer extends Line2D{
 
     private int direction;
 
-    BulletTracer(double startX, double startY, int degrees){
-        this.startX = startX;
-        this.startY = startY;
+    BulletTracer(Player player, int degrees){
+        this.startX = player.getDoubleX();
+        this.startY = player.getDoubleY();
 
         this.direction = degrees;
         this.endX = (Const.DEFAULT_BULLET_DISTANCE)*Math.cos((this.direction*Math.PI)/180);
-        this.endY = (Const.DEFAULT_BULLET_DISTANCE)*Math.sin((this.direction*Math.PI)/180);
+        this.endY = (Const.DEFAULT_BULLET_DISTANCE)*Math.sin((this.direction*Math.PI)/180)*(-1);
     }
     
     public double getX1() {

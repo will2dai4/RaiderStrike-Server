@@ -125,6 +125,7 @@ public class Server {
             player.setGun(Const.SECONDARY_SLOT, new Gun("Robin", GunModel.Robin.getMaxAmmo()));
             player.getHolding().setActive(true);
             player.setCredits(Const.STARTING_CREDITS);
+            player.print("AMMO " + player.getHoldingSlot() + " " + player.getHolding().getAmmo());
         }
 
         this.printAll("ROUND_START");
@@ -170,6 +171,7 @@ public class Server {
         ArrayList<GameObject> roomObjects = new ArrayList<>();
         roomObjects.addAll(player.getRoom().getObstacles());
         roomObjects.addAll(player.getRoom().getPlayers());
+        roomObjects.remove(player);
 
         GameObject hit = tracer.hits(roomObjects);
         if(hit != null){
@@ -177,6 +179,7 @@ public class Server {
         } 
 
         this.printAll("BULLET " + player.getRoom().getId() + " " + (int)tracer.getX1() + " " + (int)tracer.getY1() + " " + (int)tracer.getX2() + " " + (int)tracer.getY2());
+        player.print("AMMO " + player.getHoldingSlot() + " " + player.getHolding().getAmmo());
     }
 
 //------------------------------------------------------------------------------------------------------

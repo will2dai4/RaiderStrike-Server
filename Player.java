@@ -127,7 +127,7 @@ public class Player extends GameObject implements Runnable {
             int[] bullet = this.getHolding().fire();
             if(bullet[0] == 1){
                 int bulletDirection = bullet[1] + this.getDirection();
-                this.server.shoot(new BulletTracer(this.getDoubleX(), this.getDoubleY(), bulletDirection), this);
+                this.server.shoot(new BulletTracer(this, bulletDirection), this);
             }
         }
         
@@ -355,7 +355,7 @@ public class Player extends GameObject implements Runnable {
             bullet = this.getHolding().fire();
             if(bullet[0] == 1){
                 int bulletDirection = bullet[1] + this.getDirection();
-                this.server.shoot(new BulletTracer(this.getDoubleX(), this.getDoubleY(), bulletDirection), this);
+                this.server.shoot(new BulletTracer(this, bulletDirection), this);
             }
         }
     }
@@ -448,6 +448,9 @@ public class Player extends GameObject implements Runnable {
             return secondaryGun;
         else
             return null;
+    }
+    public int getHoldingSlot(){
+        return this.holdingSlot;
     }
     public void setHoldingSlot(int gunSlot) {
         this.holdingSlot = gunSlot;
