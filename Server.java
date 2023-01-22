@@ -176,7 +176,7 @@ public class Server {
             tracer.closestIntersection(hit);
         } 
 
-        this.printAll("BULLET " + player.getRoom().getId() + " " + tracer.getX1() + " " + tracer.getY1() + " " + tracer.getX2() + " " + tracer.getY2());
+        this.printAll("BULLET " + player.getRoom().getId() + " " + (int)tracer.getX1() + " " + (int)tracer.getY1() + " " + (int)tracer.getX2() + " " + (int)tracer.getY2());
     }
 
 //------------------------------------------------------------------------------------------------------
