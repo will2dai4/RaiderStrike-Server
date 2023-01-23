@@ -180,11 +180,16 @@ public class Server {
     }
     public void shoot(BulletTracer tracer, Player shooter){
         ArrayList<Obstacle> roomObstacles = shooter.getRoom().getObstacles();
-        ArrayList<Player> roomPlayers = shooter.getRoom().getPlayers();
+        ArrayList<Player> roomPlayers = new ArrayList<Player>();
+        for (Player player: this.players.values()) {
+            if (shooter.getRoom().equals(player.getRoom())) {
+                roomPlayers.add(player);
+            }
+        }
         roomPlayers.remove(shooter);
 
         ArrayList<GameObject> hits = tracer.hits(roomObstacles, roomPlayers);
-        if(!hits.isEmpty() && roomObstacles.contains(hits.get(0))){
+        if(!hits.isEmpty() && roomObstacles.contains(hits.get(0))) {
             tracer.closestIntersection(hits.get(0));
             hits.remove(0);
         }

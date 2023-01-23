@@ -85,7 +85,7 @@ public class Player extends GameObject implements Runnable {
     public void setY(double y) {
         this.y = (int)y;
     }
-    public Ellipse2D.Double getHitbox() {
+    public Ellipse2D.Double getCircleHitbox() {
         return new Ellipse2D.Double(this.x - Const.PLAYER_RADIUS, this.y - Const.PLAYER_RADIUS, Const.PLAYER_RADIUS * 2, Const.PLAYER_RADIUS * 2);
     }
     public void run() {
@@ -93,7 +93,7 @@ public class Player extends GameObject implements Runnable {
             while (true) {
                 String msg = input.readLine();
                 if (msg.length() > 0) {
-                    System.out.println("input from " + this.playerId + ": " + msg);
+                    //System.out.println("input from " + this.playerId + ": " + msg);
                     this.messages.add(msg);
                 }
             }
@@ -160,7 +160,7 @@ public class Player extends GameObject implements Runnable {
             return;
         }
         this.output.println(text);
-        System.out.println(text);
+        //System.out.println(text);
         this.output.flush();
     }
     public void printInformation(){
@@ -185,7 +185,7 @@ public class Player extends GameObject implements Runnable {
     }
 
     public boolean collides(Obstacle obstacle) {
-        return this.getHitbox().intersects(obstacle.getHitbox());
+        return this.getCircleHitbox().intersects(obstacle.getHitbox());
     }
     
     public void resetMovementSpeed() {
@@ -361,7 +361,7 @@ public class Player extends GameObject implements Runnable {
             */
 
             for(Door door: this.room.getDoors()){
-                if(this.getHitbox().intersects(door.getHitBox()) && door.cooldown.finished()){
+                if(this.getCircleHitbox().intersects(door.getHitBox()) && door.cooldown.finished()){
                     this.setRoom(door.getExit().getThisRoom());
                     this.setX(door.getExit().thisExitLocation()[0]);
                     this.setY(door.getExit().thisExitLocation()[1]);

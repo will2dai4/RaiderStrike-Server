@@ -5,7 +5,7 @@ import java.util.*;
 /* Class that manages Bullets and Tracers
  */
 
-public class BulletTracer extends Line2D{
+public class BulletTracer extends Line2D {
     private double startX;
     private double startY;
     private double endX;
@@ -63,6 +63,14 @@ public class BulletTracer extends Line2D{
         this.endY = y2;
     }
 
+    public boolean intersects(Ellipse2D player) {
+        double A = (this.endY - this.startX)/(this.endX - this.startY);
+        double B = -1;
+        double C = this.startY - A * this.startX;
+        double d = Math.abs(A * player.getX() + B * player.getY() + C)/Math.sqrt(Math.pow(A, 2) + Math.pow(B, 2));
+        return d <= Const.PLAYER_RADIUS;
+    }
+
     public ArrayList<GameObject> hits(ArrayList<Obstacle> obstacles, ArrayList<Player> players){
         ArrayList<Obstacle> obsCollides = new ArrayList<>();
         ArrayList<Player> playCollides = new ArrayList<>();
@@ -73,7 +81,8 @@ public class BulletTracer extends Line2D{
             }
         }
         for(Player player: players){
-            if(this.intersects(player.getHitBox())){
+            if(this.intersects(player.getCircleHitbox())) {
+                System.out.println("heyo");
                 playCollides.add(player);
             }
         }
