@@ -182,7 +182,7 @@ public class Server {
         roomPlayers.remove(shooter);
 
         ArrayList<GameObject> hits = tracer.hits(roomObstacles, roomPlayers);
-        if(roomObstacles.contains(hits.get(0))){
+        if(!hits.isEmpty() && roomObstacles.contains(hits.get(0))){
             tracer.closestIntersection(hits.get(0));
             hits.remove(0);
         }
@@ -202,7 +202,7 @@ public class Server {
                 }
             }
         }
-        
+
         this.printAll("BULLET " + shooter.getRoom().getId() + " " + (int)tracer.getX1() + " " + (int)tracer.getY1() + " " + (int)tracer.getX2() + " " + (int)tracer.getY2());
         shooter.print("AMMO " + shooter.getHoldingSlot() + " " + shooter.getHolding().getAmmo());
     }
