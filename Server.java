@@ -131,9 +131,8 @@ public class Server {
         // Give players starting items
         for(Player player: players.values()){
             player.setAlive(true);
-            player.setGun(Const.SECONDARY_SLOT, new Gun("Robin", GunModel.Robin.getMaxAmmo()));
-            player.getHolding().setActive(true);
             player.setCredits(Const.STARTING_CREDITS);
+            player.buy(new String[]{"Robin"});
             this.printAll("PLAYER_GUN " + player.getPlayerId() + " " + player.getHolding().getModel());
             player.print("CREDS " + player.getCredits());
             player.print("AMMO " + player.getHoldingSlot() + " " + player.getHolding().getAmmo());
@@ -203,6 +202,7 @@ public class Server {
             if(player.getTeam() != shooter.getTeam() && player.getAlive()){
                 this.printAll("DAMAGE " + player.getPlayerId());
                 player.setHealth(player.getHealth() - tracer.getDamage());
+                this.printAll("HEALTH " + player.getPlayerId() + " " + player.getHealth());
                 if(player.getHealth() <= 0){
                     player.setAlive(false);
                     this.printAll("DEATH " + player.getPlayerId() + " " + shooter.getPlayerId() + " " + shooter.getHolding().getModel());

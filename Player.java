@@ -264,6 +264,7 @@ public class Player extends GameObject implements Runnable {
                         this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.primaryGun.getModel());
                     } break;
                 case Const.SECONDARY_SLOT:
+                System.out.println(this.secondaryGun.getModel());
                     this.setHoldingSlot(Const.SECONDARY_SLOT);
                     this.getHolding().takeOut();
                     this.getHolding().setActive(true);
@@ -366,7 +367,6 @@ public class Player extends GameObject implements Runnable {
                     this.setX(door.getExit().thisExitLocation()[0]);
                     this.setY(door.getExit().thisExitLocation()[1]);
                     door.getExit().exit();
-                    System.out.println(door.getWidth() + " " + door.getHeight() + " " + door.getX() + " " + door.getY() + " " + this.room.getId());
                     this.server.printAll("PLAYER_ROOM " + this.getPlayerId() + " " + this.getRoom().getId());
                     break;
                 }
@@ -404,7 +404,7 @@ public class Player extends GameObject implements Runnable {
         
     }
 
-    private void buy(String[] args){
+    public void buy(String[] args){
         String gunName = args[0];
         if(!gunName.equals("0")){
             GunModel gun = GunModel.valueOf(gunName);
@@ -417,13 +417,14 @@ public class Player extends GameObject implements Runnable {
                     gun.toString().equals("Finch") ||
                     gun.toString().equals("Hummingbird") ||
                     gun.toString().equals("Raven")){
+                        System.out.println("buy sidearm");
                     this.setGun(Const.SECONDARY_SLOT, new Gun(gun.toString(), gun.getMaxAmmo()));
                 } else {
                     this.setGun(Const.PRIMARY_SLOT, new Gun(gun.toString(), gun.getMaxAmmo()));
                 }
 
                 this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.getHolding().getModel());
-                this.print("PICKUP " + this.getHolding().getModel());
+                this.print("PICKUP " + gun.name());
             }
         }
     }
@@ -481,8 +482,10 @@ public class Player extends GameObject implements Runnable {
         switch (slot) {
             case Const.PRIMARY_SLOT:
                 this.primaryGun = gun;
+                break;
             case Const.SECONDARY_SLOT:
                 this.secondaryGun = gun;
+                break;
         }
     }
 
@@ -508,7 +511,7 @@ public class Player extends GameObject implements Runnable {
         this.health = health;
     }
 
-    public int getSheild(){
+    public int getShield(){
         return this.shield;
     }
     public void setShield(int shield){

@@ -23,7 +23,7 @@ public class Const {
     public static final int ROUND_LOSE_CREDITS1 = 2000;
     public static final int ROUND_LOSE_CREDITS2 = 2800;
 
-    public static final int BUY_PERIOD_TIME = 20; // seconds
+    public static final int BUY_PERIOD_TIME = 15; // seconds
     public static final int ROUND_PERIOD_TIME = 120;
 
     public static final int PRIMARY_SLOT = 1;

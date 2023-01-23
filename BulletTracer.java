@@ -67,7 +67,7 @@ public class BulletTracer extends Line2D {
         double A = (this.endY - this.startX)/(this.endX - this.startY);
         double B = -1;
         double C = this.startY - A * this.startX;
-        double d = Math.abs(A * player.getX() + B * player.getY() + C)/Math.sqrt(Math.pow(A, 2) + Math.pow(B, 2));
+        double d = Math.abs(A * (player.getX()+Const.PLAYER_RADIUS) + B * (player.getY()+Const.PLAYER_RADIUS) + C)/Math.sqrt(Math.pow(A, 2) + Math.pow(B, 2));
         return d <= Const.PLAYER_RADIUS;
     }
 
@@ -82,7 +82,6 @@ public class BulletTracer extends Line2D {
         }
         for(Player player: players){
             if(this.intersects(player.getCircleHitbox())) {
-                System.out.println("heyo");
                 playCollides.add(player);
             }
         }
