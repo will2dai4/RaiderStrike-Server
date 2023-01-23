@@ -80,18 +80,18 @@ public class BulletTracer extends Line2D{
         if(!obsCollides.isEmpty()){
             Obstacle closest = obsCollides.get(0);
             for(Obstacle obstacle: obsCollides){
-                if( Math.sqrt(Math.pow(obstacle.getX() + this.getX1(), 2) + Math.pow(obstacle.getY() + this.getY1(), 2)) <
-                    Math.sqrt(Math.pow(closest.getX() + this.getX1(), 2) + Math.pow(closest.getY() + this.getY1(), 2)) && !obstacle.getPermeable()){
+                if( Math.sqrt(Math.pow(obstacle.getX() - this.getX1(), 2) + Math.pow(obstacle.getY() - this.getY1(), 2)) <
+                    Math.sqrt(Math.pow(closest.getX() - this.getX1(), 2) + Math.pow(closest.getY() - this.getY1(), 2)) && !obstacle.getPermeable()){
                         closest = obstacle;
                 }
             }
             hits.add(closest);
         }
         // find all players that will be hit
-        for(Player player: players){
-            if(obsCollides.isEmpty() || Math.sqrt(Math.pow(player.getX() + this.getX1(), 2) + Math.pow(player.getY() + this.getY1(), 2)) <
-                                        Math.sqrt(Math.pow(hits.get(0).getX() + this.getX1(), 2) + Math.pow(hits.get(0).getY() + this.getY1(), 2))){
-                    hits.add(player);
+        for(Player player: playCollides){
+            if(obsCollides.isEmpty() || Math.sqrt(Math.pow(player.getX() - this.getX1(), 2) + Math.pow(player.getY() - this.getY1(), 2)) <
+                                        Math.sqrt(Math.pow(hits.get(0).getX() - this.getX1(), 2) + Math.pow(hits.get(0).getY() - this.getY1(), 2))){
+                hits.add(player);
             }
         }
         return hits;
