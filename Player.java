@@ -67,6 +67,8 @@ public class Player extends GameObject implements Runnable {
         this.defaultMovementSpeed = Const.PLAYER_MOVEMENT_SPEED;
         this.movementSpeed = this.defaultMovementSpeed;
 
+        this.radius = Const.PLAYER_RADIUS;
+
         this.state = this.server.state;
         this.messages = new LinkedList<String>();
     }
@@ -312,7 +314,8 @@ public class Player extends GameObject implements Runnable {
             if((this.x - this.radius) < 0)                         { this.setX(this.radius); }
             if((this.y - this.radius) < 0)                         { this.setY(this.radius); }
             if((this.x + this.radius) > this.getRoom().getWidth()) { this.setX(this.getRoom().getWidth() - this.radius); }
-            if((this.y + this.radius) > this.getRoom().getHeight()) { this.setY(this.getRoom().getHeight() - this.radius); }
+            if((this.y + this.radius) > this.getRoom().getHeight()){ this.setY(this.getRoom().getHeight() - this.radius); }
+            System.out.println(x + " " + y);
             /*
             for(Obstacle obstacle: this.room.getObstacles()){
                 if(this.collides(obstacle)){

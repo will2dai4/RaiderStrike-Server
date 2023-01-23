@@ -193,7 +193,7 @@ public class Server {
         }
 
         for(Player player: playerHits){
-            if(player.getTeam() != shooter.getTeam()){
+            if(player.getTeam() != shooter.getTeam() && player.getAlive()){
                 this.printAll("DAMAGE " + player.getPlayerId());
                 player.setHealth(player.getHealth() - tracer.getDamage());
                 if(player.getHealth() <= 0){

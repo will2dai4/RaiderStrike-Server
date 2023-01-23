@@ -13,7 +13,7 @@ public class Const {
     public static final int MAX_NAME_LENGTH = 24;
 
     public static final String AUGUSTA_MAP_PATHNAME = "Maps/AugustaMap.txt";
-    public static final int DOOR_SIZE = 1;
+    public static final int DOOR_SIZE = 2;
     public static final int EXIT_DISTANCE = PLAYER_RADIUS + 20;
 
     public static final int STARTING_HEALTH = 100;

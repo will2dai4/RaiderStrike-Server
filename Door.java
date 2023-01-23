@@ -4,6 +4,7 @@ public class Door extends GameObject{
     private final int idToRoom;
     private final int idToDoor;
     private final int direction;
+    private Ellipse2D circHitbox;
     private Door exit;
     private Room thisRoom;
 
@@ -22,15 +23,29 @@ public class Door extends GameObject{
         if(this.direction == 0 || this.direction == 2){ // up and down
             super.setWidth(width);
             super.setHeight(Const.DOOR_SIZE);
+            if(this.direction == 0){
+                super.setY(super.getY() - Const.DOOR_SIZE);
+            } else {
+                super.setY(super.getY() + Const.DOOR_SIZE);
+            }
         } else if(this.direction == 1 || this.direction == 3){ // left and right
             super.setWidth(Const.DOOR_SIZE);
             super.setHeight(width);
+            if(this.direction == 3){
+                super.setX(super.getX() - Const.DOOR_SIZE);
+            } else {
+                super.setX(super.getX() + Const.DOOR_SIZE);
+            }
         }
 
-        this.hitbox = new Rectangle2D.Double(x, y, width, direction);
+        Ellipse2D hitbox = new Ellipse2D.Double(x, y, width, direction);
     }
     public void exit(){
         cooldown.start();
+    }
+
+    public Ellipse2D getCircHitBox() {
+        return this.circHitbox;
     }
 
     public int getIdToRoom() {
