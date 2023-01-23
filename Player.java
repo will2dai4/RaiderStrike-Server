@@ -104,37 +104,39 @@ public class Player extends GameObject implements Runnable {
 
     public void update() throws InterruptedException{
         while(!messages.isEmpty()){
-            String[] msg = messages.poll().split(" ");
-            String command = msg[0];
-            String[] args = Arrays.copyOfRange(msg, 1, msg.length);
-            switch(state.name()){
-                case "PREGAME":
-                    switch(command){
-                        case "NAME": this.name(args);  break;
-                        case "TEAM": this.team(args); break;
-                        case "AGENT": this.agent(args); break;
-                        case "READY": this.ready(); break;
-                    }
-                case "LOADING":
-                    switch(command){
-                        case "LOADED": this.loaded(); break;
-                    }
-                case "INGAME":
-                    switch(command){
-                        case "SWAP": if(this.alive) this.swap(args); break;
-                        case "AIM": if(this.alive) this.aim(args); break;
-                        case "MOVE": if(this.alive) this.move(args); break;
-                        case "FIRE": if(this.alive) this.fire(args); break;
-                        case "UTIL": if(this.alive) this.util(args); break;
-                        case "RELOAD": if(this.alive) this.reload(); break;
-                        case "BOMB": if(this.alive) this.bomb(); break;
-                        case "PICKUP": if(this.alive) this.pickUp(args); break;
-                    }
-                case "BUYMENU":
-                    switch(command){
-                        case "BUY": this.buy(args); break;
-                    }
-            }
+            if(messages.peek() != null){
+                String[] msg = messages.poll().split(" ");
+                String command = msg[0];
+                String[] args = Arrays.copyOfRange(msg, 1, msg.length);
+                switch(state.name()){
+                    case "PREGAME":
+                        switch(command){
+                            case "NAME": this.name(args);  break;
+                            case "TEAM": this.team(args); break;
+                            case "AGENT": this.agent(args); break;
+                            case "READY": this.ready(); break;
+                        }
+                    case "LOADING":
+                        switch(command){
+                            case "LOADED": this.loaded(); break;
+                        }
+                    case "INGAME":
+                        switch(command){
+                            case "SWAP": if(this.alive) this.swap(args); break;
+                            case "AIM": if(this.alive) this.aim(args); break;
+                            case "MOVE": if(this.alive) this.move(args); break;
+                            case "FIRE": if(this.alive) this.fire(args); break;
+                            case "UTIL": if(this.alive) this.util(args); break;
+                            case "RELOAD": if(this.alive) this.reload(); break;
+                            case "BOMB": if(this.alive) this.bomb(); break;
+                            case "PICKUP": if(this.alive) this.pickUp(args); break;
+                        }
+                    case "BUYMENU":
+                        switch(command){
+                            case "BUY": this.buy(args); break;
+                        }
+                }
+            } else {messages.poll();}
         }
 
         if(this.moving){
