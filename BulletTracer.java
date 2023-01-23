@@ -54,24 +54,38 @@ public class BulletTracer extends Line2D{
         this.endY = y2;
     }
 
-    public GameObject hits(ArrayList<GameObject> objects){
-        ArrayList<GameObject> collides = new ArrayList<>();
-        for(GameObject object: objects){
-            if(this.intersects(object.getHitBox())){
-                collides.add(object);
+    public ArrayList<GameObject> hits(ArrayList<Obstacle> obstacles, ArrayList<Player> players){
+        ArrayList<Obstacle> obsCollides = new ArrayList<>();
+        ArrayList<Player> playCollides = new ArrayList<>();
+        ArrayList<GameObject> hits = new ArrayList<>();
+        for(Obstacle obstacle: obstacles){
+            if(this.intersects(obstacle.getHitBox())){
+                obsCollides.add(obstacle);
             }
         }
-        if(!collides.isEmpty()){
-            GameObject closest = collides.get(0);
-            for(GameObject object: collides){
-                if( Math.sqrt(Math.pow(object.getX() + this.getX1(), 2) + Math.pow(object.getY() + this.getY1(), 2)) <
-                    Math.sqrt(Math.pow(closest.getX() + this.getX1(), 2) + Math.pow(closest.getY() + this.getY1(), 2))){
-                        closest = object;
+        for(Player player: players){
+            if(this.intersects(player.getHitBox())){
+                playCollides.add(player);
+            }
+        }
+        if(!obsCollides.isEmpty()){
+            Obstacle closest = obsCollides.get(0);
+            for(Obstacle obstacle: obsCollides){
+                if( Math.sqrt(Math.pow(obstacle.getX() + this.getX1(), 2) + Math.pow(obstacle.getY() + this.getY1(), 2)) <
+                    Math.sqrt(Math.pow(closest.getX() + this.getX1(), 2) + Math.pow(closest.getY() + this.getY1(), 2)) && !obstacle.getPermeable()){
+                        closest = obstacle;
                 }
             }
-            return closest;
+            hits.add(closest);
         }
-        return null;
+        // find all players that will be hit
+        for(Player player: players){
+            if(obsCollides.isEmpty() || Math.sqrt(Math.pow(player.getX() + this.getX1(), 2) + Math.pow(player.getY() + this.getY1(), 2)) <
+                                        Math.sqrt(Math.pow(hits.get(0).getX() + this.getX1(), 2) + Math.pow(hits.get(0).getY() + this.getY1(), 2))){
+                    hits.add(player);
+            }
+        }
+        return hits;
     }
 
     public void closestIntersection(GameObject object){ // finds closest bullet-object collision points
