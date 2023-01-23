@@ -4,6 +4,9 @@ import java.net.*;
 import java.awt.geom.*;
 import java.awt.*;
 
+/*
+ * Server class handles connections and general server to client interactions
+ */
 public class Server {
     ServerSocket serverSocket;
     Socket clientSocket;
@@ -12,7 +15,6 @@ public class Server {
     int clientCounter;
 
     GameState state;
-    StateMachine stateMachine; /* TODO: ignore for now */
 
     Queue<Socket> newPlayers;
     HashMap<Integer, Player> players;
@@ -53,8 +55,9 @@ public class Server {
                         }
                         break;
                     case BUYPERIOD:
-                        if(!this.round.roundTimer.finished()){
+                        if(this.round.roundTimer.finished()){
                             this.state.nextState();
+                            this.printAll("ROUND_START");
                         }
                         break;
                     case INGAME:
@@ -137,7 +140,6 @@ public class Server {
 
         this.round = new Round(defend.getTeamNum(), attack.getTeamNum());
         this.round.start();
-        this.printAll("ROUND_START");
         this.state = this.state.nextState();
         this.inGame = true;
     }

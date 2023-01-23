@@ -1,12 +1,12 @@
 import java.net.*;
 import java.util.*;
-
-import javax.management.StringValueExp;
-
 import java.awt.geom.*;
 import java.io.*;
 import java.awt.*;
 import java.awt.geom.*;
+/*
+ * Player class that handles player thread, attributes, and any player-server messages
+ */
 
 public class Player extends GameObject implements Runnable {
     private int x;

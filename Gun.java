@@ -1,3 +1,7 @@
+/*
+ * Gun class that handles any gun functions
+ */
+
 public class Gun {
     public GunModel model;
     private Timer gunCooldown;

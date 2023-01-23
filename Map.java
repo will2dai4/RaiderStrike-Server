@@ -1,6 +1,10 @@
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.io.*;
+/*
+ * Map class that handles holding map attributes and building the map 
+ * from map files
+ */
 
 public class Map {
     private String name;

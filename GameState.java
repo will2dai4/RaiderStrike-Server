@@ -1,3 +1,7 @@
+/*
+ * Class that dictates the available functions based on following game states
+ */
+
 public enum GameState {
     PREGAME{
         public GameState nextState(){ return LOADING; }

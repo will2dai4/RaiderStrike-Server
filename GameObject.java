@@ -1,5 +1,8 @@
 import java.awt.geom.*;
 import java.awt.*;
+/*
+ * GameObject that encircle any game objects will hitboxes
+ */
 
 public abstract class GameObject{
     double x;

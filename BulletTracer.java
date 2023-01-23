@@ -2,6 +2,9 @@ import java.awt.geom.*;
 import java.awt.*;
 import java.util.*;
 
+/* Class that manages Bullets and Tracers
+ */
+
 public class BulletTracer extends Line2D{
     private double startX;
     private double startY;

@@ -1,3 +1,7 @@
+/*
+ * Timer class used as a tool to manage cooldowns and time limitations
+ */
+
 public class Timer {
     private double startTime; 
     private double timerLength;

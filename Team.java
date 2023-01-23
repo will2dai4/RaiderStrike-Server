@@ -1,4 +1,7 @@
 import java.util.*;
+/*
+ * Team class handles player in a team and sets its attributes
+ */
 
 public class Team {
     private int teamId;

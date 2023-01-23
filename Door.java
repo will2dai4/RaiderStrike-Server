@@ -1,10 +1,12 @@
 import java.awt.geom.*;
+/*
+ * Door class for doors in rooms
+ */
 
 public class Door extends GameObject{
     private final int idToRoom;
     private final int idToDoor;
     private final int direction;
-    private Ellipse2D circHitbox;
     private Door exit;
     private Room thisRoom;
 
@@ -37,17 +39,10 @@ public class Door extends GameObject{
                 super.setX(super.getX() + Const.DOOR_SIZE);
             }
         }
-
-        Ellipse2D hitbox = new Ellipse2D.Double(x, y, width, direction);
     }
     public void exit(){
         cooldown.start();
     }
-
-    public Ellipse2D getCircHitBox() {
-        return this.circHitbox;
-    }
-
     public int getIdToRoom() {
         return this.idToRoom;
     }

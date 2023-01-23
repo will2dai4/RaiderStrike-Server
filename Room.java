@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 import java.awt.*;
+/*
+ * Room class that handles room attributes
+ */
 
 public class Room {
     private final int roomId;
