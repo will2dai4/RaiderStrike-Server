@@ -259,14 +259,14 @@ public class Player extends GameObject implements Runnable {
                         this.getHolding().takeOut();
                         this.getHolding().setActive(true);
                         this.secondaryGun.setActive(false);
-                        this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.primaryGun);
+                        this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.primaryGun.getModel());
                     }
                 case 2:
                     this.setHoldingSlot(Const.SECONDARY_SLOT);
                     this.getHolding().takeOut();
                     this.getHolding().setActive(true);
                     this.primaryGun.setActive(false);
-                    this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.secondaryGun);
+                    this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.secondaryGun.getModel());
             }
         }
     }
