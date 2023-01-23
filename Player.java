@@ -260,13 +260,14 @@ public class Player extends GameObject implements Runnable {
                         this.getHolding().setActive(true);
                         this.secondaryGun.setActive(false);
                         this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.primaryGun.getModel());
-                    }
-                case 2:
+                    } break;
+                case Const.SECONDARY_SLOT:
                     this.setHoldingSlot(Const.SECONDARY_SLOT);
                     this.getHolding().takeOut();
                     this.getHolding().setActive(true);
                     this.primaryGun.setActive(false);
                     this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.secondaryGun.getModel());
+                    break;
             }
         }
     }
@@ -414,9 +415,9 @@ public class Player extends GameObject implements Runnable {
                     gun.toString().equals("Finch") ||
                     gun.toString().equals("Hummingbird") ||
                     gun.toString().equals("Raven")){
-                    this.setGun(2, new Gun(gun.toString(), gun.getMaxAmmo()));
+                    this.setGun(Const.SECONDARY_SLOT, new Gun(gun.toString(), gun.getMaxAmmo()));
                 } else {
-                    this.setGun(1, new Gun(gun.toString(), gun.getMaxAmmo()));
+                    this.setGun(Const.PRIMARY_SLOT, new Gun(gun.toString(), gun.getMaxAmmo()));
                 }
 
                 this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.getHolding().getModel());
