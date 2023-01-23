@@ -7,6 +7,7 @@ public class Map {
     private int roomCount;
     private int roomId;
     private ArrayList<Room> rooms;
+    private ArrayList<Door> allDoors;
     private Room defenderRoom;
     private Room attackerRoom;
     private BufferedReader input;
@@ -18,6 +19,7 @@ public class Map {
         this.roomCount = 0;
         this.roomId = 0;
         this.rooms = new ArrayList<>();
+        this.allDoors = new ArrayList<>();
     }
     public void buildMap() throws IOException{
         this.name = input.readLine();
@@ -60,7 +62,12 @@ public class Map {
                 int doorId = Integer.parseInt(doorLine[4]);
                 int direction = Integer.parseInt(doorLine[5]);
                 
-                doors.add(new Door(doorWidth, doorX, doorY, idToRoom, doorId, direction));
+                Door door = new Door(doorWidth, doorX, doorY, idToRoom, doorId, direction);
+                if(door != null){
+
+                    allDoors.add(door);
+                    doors.add(door);
+                }
             }
 
             Room room;
@@ -79,6 +86,13 @@ public class Map {
                 room = new Room(roomId++, width, height, obstacles, doors);
             }
             rooms.add(room);
+            for(Door door: doors){
+                door.setThisRoom(room);
+            }
+        }
+
+        for(Door door: allDoors){
+            door.setExit(rooms.get(door.getIdToRoom()).getDoors().get(door.getIdToDoor()));
         }
     }
 

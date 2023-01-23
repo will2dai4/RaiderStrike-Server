@@ -64,7 +64,6 @@ public class Player extends GameObject implements Runnable {
         this.movementSpeed = this.defaultMovementSpeed;
 
         this.radius = this.getWidth()/2;
-        double collisionBoxSize = (Const.PLAYER_RADIUS)/(Const.COLLISION_BOX_RATIO);
 
         this.state = this.server.state;
         this.messages = new LinkedList<String>();
@@ -335,6 +334,18 @@ public class Player extends GameObject implements Runnable {
                                 this.setX(obstacle.getDoubleX() + this.getWidth()); // right
                             } break;
                     }
+                }
+            }
+
+            for(Door door: this.room.getDoors()){
+                if(this.hitbox.intersects(door.getHitBox()) && door.cooldown.finished()){
+                    this.setRoom(door.getExit().getThisRoom());
+                    this.setX(door.getExit().thisExitLocation()[0]);
+                    this.setY(door.getExit().thisExitLocation()[1]);
+                    door.getExit().exit();
+                    System.out.println(door.getWidth() + " " + door.getHeight() + " " + door.getX() + " " + door.getY() + " " + this.room.getId());
+                    this.server.printAll("PLAYER_ROOM " + this.getPlayerId() + " " + this.getRoom().getId());
+                    break;
                 }
             }
 

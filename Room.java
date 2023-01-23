@@ -58,6 +58,10 @@ public class Room {
         return this.obstacles;
     }
 
+    public ArrayList<Door> getDoors() {
+        return this.doors;
+    }
+
     public ArrayList<Player> getPlayers(){
         return this.players;
     }
