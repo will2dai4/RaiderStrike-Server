@@ -218,7 +218,7 @@ public class Server {
     }
     public void printTeam(String text, Team team){
         for(Player player: players.values()){
-            if(player.getTeam() == (team.getTeamNum())){
+            if(player.getTeam() >= 0 && player.getTeam() == (team.getTeamNum())){
                 player.print(text);
             }
         }

@@ -437,7 +437,10 @@ public class Player extends GameObject implements Runnable {
     }
 
     public int getTeam() {
-        return this.team.getTeamNum();
+        if(team != null){
+            return this.team.getTeamNum();
+        }
+        return -1;
     }
     public void setTeam(Team team) {
         this.team = team;
