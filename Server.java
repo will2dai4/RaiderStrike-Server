@@ -53,8 +53,13 @@ public class Server {
                         }
                         break;
                     case BUYPERIOD:
+                        if(!this.round.roundTimer.finished()){
+                            this.state.nextState();
+                        }
                         break;
                     case INGAME:
+                        break;
+                    case ENDGAME:
                         break;
                 }
                 
@@ -68,7 +73,6 @@ public class Server {
         this.blueTeam = new Team(1);
         this.redTeam = new Team(0);
         this.map = new Map(Const.AUGUSTA_MAP_PATHNAME); this.map.buildMap();
-        this.round = new Round();
 
         this.playerThreads = new ArrayList<Thread>();
         this.connectionHandler = new ConnectionHandler(this); this.connectionHandler.start();
@@ -122,12 +126,17 @@ public class Server {
 
         // Give players starting items
         for(Player player: players.values()){
+            player.setAlive(true);
             player.setGun(Const.SECONDARY_SLOT, new Gun("Robin", GunModel.Robin.getMaxAmmo()));
             player.getHolding().setActive(true);
             player.setCredits(Const.STARTING_CREDITS);
+            this.printAll("PLAYER_GUN " + player.getPlayerId() + " " + player.getHolding().getModel());
+            player.print("CREDS " + player.getCredits());
             player.print("AMMO " + player.getHoldingSlot() + " " + player.getHolding().getAmmo());
         }
 
+        this.round = new Round(defend.getTeamNum(), attack.getTeamNum());
+        this.round.start();
         this.printAll("ROUND_START");
         this.state = this.state.nextState();
         this.inGame = true;
@@ -167,18 +176,35 @@ public class Server {
         }
         return false;
     }
-    public void shoot(BulletTracer tracer, Player player){
-        ArrayList<Obstacle> roomObstacles = player.getRoom().getObstacles();
-        ArrayList<Player> roomPlayers = player.getRoom().getPlayers();
-        roomPlayers.remove(player);
+    public void shoot(BulletTracer tracer, Player shooter){
+        ArrayList<Obstacle> roomObstacles = shooter.getRoom().getObstacles();
+        ArrayList<Player> roomPlayers = shooter.getRoom().getPlayers();
+        roomPlayers.remove(shooter);
 
         ArrayList<GameObject> hits = tracer.hits(roomObstacles, roomPlayers);
         if(roomObstacles.contains(hits.get(0))){
             tracer.closestIntersection(hits.get(0));
+            hits.remove(0);
         }
 
-        this.printAll("BULLET " + player.getRoom().getId() + " " + (int)tracer.getX1() + " " + (int)tracer.getY1() + " " + (int)tracer.getX2() + " " + (int)tracer.getY2());
-        player.print("AMMO " + player.getHoldingSlot() + " " + player.getHolding().getAmmo());
+        ArrayList<Player> playerHits = new ArrayList<>();
+        for(GameObject object: hits){
+            playerHits.add((Player) object);
+        }
+
+        for(Player player: playerHits){
+            if(player.getTeam() != shooter.getTeam()){
+                this.printAll("DAMAGE " + player.getPlayerId());
+                player.setHealth(player.getHealth() - tracer.getDamage());
+                if(player.getHealth() <= 0){
+                    player.setAlive(false);
+                    this.printAll("DEATH " + player.getPlayerId() + " " + shooter.getPlayerId() + " " + shooter.getHolding().getModel());
+                }
+            }
+        }
+        
+        this.printAll("BULLET " + shooter.getRoom().getId() + " " + (int)tracer.getX1() + " " + (int)tracer.getY1() + " " + (int)tracer.getX2() + " " + (int)tracer.getY2());
+        shooter.print("AMMO " + shooter.getHoldingSlot() + " " + shooter.getHolding().getAmmo());
     }
 
 //------------------------------------------------------------------------------------------------------

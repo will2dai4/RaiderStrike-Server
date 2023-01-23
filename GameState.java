@@ -10,6 +10,9 @@ public enum GameState {
     },
     INGAME{
         public GameState nextState(){ return BUYPERIOD; }
+    },
+    ENDGAME{
+        public GameState nextState(){ return null; }
     };
 
     public abstract GameState nextState();

@@ -103,14 +103,14 @@ public class Player extends GameObject implements Runnable {
                     }
                 case "INGAME":
                     switch(command){
-                        case "SWAP": this.swap(args); break;
-                        case "AIM": this.aim(args); break;
-                        case "MOVE": this.move(args); break;
-                        case "FIRE": this.fire(args); break;
-                        case "UTIL": this.util(args); break;
-                        case "RELOAD": this.reload(); break;
-                        case "BOMB": this.bomb(); break;
-                        case "PICKUP": this.pickUp(args); break;
+                        case "SWAP": if(this.alive) this.swap(args); break;
+                        case "AIM": if(this.alive) this.aim(args); break;
+                        case "MOVE": if(this.alive) this.move(args); break;
+                        case "FIRE": if(this.alive) this.fire(args); break;
+                        case "UTIL": if(this.alive) this.util(args); break;
+                        case "RELOAD": if(this.alive) this.reload(); break;
+                        case "BOMB": if(this.alive) this.bomb(); break;
+                        case "PICKUP": if(this.alive) this.pickUp(args); break;
                     }
                 case "BUYMENU":
                     switch(command){
@@ -126,10 +126,9 @@ public class Player extends GameObject implements Runnable {
             int[] bullet = this.getHolding().fire();
             if(bullet[0] == 1){
                 int bulletDirection = bullet[1] + this.getDirection();
-                this.server.shoot(new BulletTracer(this.getX(), this.getY(), bulletDirection), this);
+                this.server.shoot(new BulletTracer(this.getX(), this.getY(), bulletDirection, GunModel.valueOf(this.getHolding().getModel()).getDamage()), this);
             }
         }
-        
         try{
             Thread.sleep(10);
         } catch (InterruptedException e){ e.printStackTrace(); }
@@ -354,7 +353,7 @@ public class Player extends GameObject implements Runnable {
             bullet = this.getHolding().fire();
             if(bullet[0] == 1){
                 int bulletDirection = bullet[1] + this.getDirection();
-                this.server.shoot(new BulletTracer(this.getX(), this.getY(), bulletDirection), this);
+                this.server.shoot(new BulletTracer(this.getX(), this.getY(), bulletDirection, GunModel.valueOf(this.getHolding().getModel()).getDamage()), this);
             }
         }
     }
@@ -372,7 +371,26 @@ public class Player extends GameObject implements Runnable {
     }
 
     private void buy(String[] args){
+        String gunName = args[0];
+        if(!gunName.equals("0")){
+            GunModel gun = GunModel.valueOf(gunName);
+            if(gun.getPrice() <= this.getCredits()){
+                this.setCredits(this.getCredits() - gun.getPrice());
+                this.print("CREDS " + this.getCredits());
 
+                if( gun.toString().equals("Robin") ||
+                    gun.toString().equals("Duck") ||
+                    gun.toString().equals("Finch") ||
+                    gun.toString().equals("Hummingbird") ||
+                    gun.toString().equals("Raven")){
+                    this.setGun(2, new Gun(gun.toString(), gun.getMaxAmmo()));
+                } else {
+                    this.setGun(1, new Gun(gun.toString(), gun.getMaxAmmo()));
+                }
+
+                this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.getHolding().getModel());
+            }
+        }
     }
 
 // ------------------------------------------------------------------------------------------------
@@ -381,13 +399,11 @@ public class Player extends GameObject implements Runnable {
     public void setX(double x){
         this.x = x;
         this.hitbox.setRect(x - this.radius, this.hitbox.getY(), this.hitbox.getWidth(), this.hitbox.getHeight());
-        System.out.println(this.y + " " + this.hitbox.getY()+this.radius);
     }
     @Override
     public void setY(double y){
         this.y = y;
         this.hitbox.setRect(this.hitbox.getX(), y - this.radius, this.hitbox.getWidth(), this.hitbox.getHeight());
-        System.out.println(this.y + " " + this.hitbox.getY()+this.radius);
     }
 
     public String getName() {

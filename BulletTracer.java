@@ -7,12 +7,14 @@ public class BulletTracer extends Line2D{
     private double startY;
     private double endX;
     private double endY;
+    private int damage;
 
     private int direction;
 
-    BulletTracer(int x, int y, int degrees){
+    BulletTracer(int x, int y, int degrees, int damage){
         this.startX = x;
         this.startY = y;
+        this.damage = damage;
 
         this.direction = degrees;
         this.endX = (Const.DEFAULT_BULLET_DISTANCE)*Math.cos((this.direction*Math.PI)/180);
@@ -45,6 +47,10 @@ public class BulletTracer extends Line2D{
 
     public int getDirection(){
         return this.direction;
+    }
+
+    public int getDamage(){
+        return this.damage;
     }
 
     public void setLine(double x1, double y1, double x2, double y2) {

@@ -49,6 +49,9 @@ public class Gun {
         return (model.getFireRate()/3);
     }
     
+    public String getModel(){
+        return this.model.toString();
+    }
     public int getAmmo() {
         return this.ammo; 
     }
