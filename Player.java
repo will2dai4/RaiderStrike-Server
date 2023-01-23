@@ -421,6 +421,7 @@ public class Player extends GameObject implements Runnable {
                 }
 
                 this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.getHolding().getModel());
+                this.print("PICKUP " + this.getHolding().getModel());
             }
         }
     }

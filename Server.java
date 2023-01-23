@@ -55,9 +55,10 @@ public class Server {
                         }
                         break;
                     case BUYPERIOD:
-                        if(this.round.roundTimer.finished()){
-                            this.state.nextState();
+                        if(this.round.roundTimer.finished() && !inGame){
                             this.printAll("ROUND_START");
+                            this.inGame = true;
+                            this.state.nextState();
                         }
                         break;
                     case INGAME:
@@ -139,9 +140,8 @@ public class Server {
         }
 
         this.round = new Round(defend.getTeamNum(), attack.getTeamNum());
-        this.round.start();
         this.state = this.state.nextState();
-        this.inGame = true;
+        this.round.start();
     }
     
     private boolean canStart(){

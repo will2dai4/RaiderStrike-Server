@@ -18,7 +18,7 @@ public class Const {
 
     public static final int STARTING_HEALTH = 100;
     public static final int STARTING_SHIELD = 0;
-    public static final int STARTING_CREDITS = 800;
+    public static final int STARTING_CREDITS = 100000;
     public static final int ROUND_WIN_CREDITS = 3000;
     public static final int ROUND_LOSE_CREDITS1 = 2000;
     public static final int ROUND_LOSE_CREDITS2 = 2800;
