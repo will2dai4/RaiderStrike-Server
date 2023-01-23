@@ -160,7 +160,7 @@ public class Player extends GameObject implements Runnable {
             return;
         }
         this.output.println(text);
-        //System.out.println(text);
+        System.out.println(text);
         this.output.flush();
     }
     public void printInformation(){
@@ -264,7 +264,6 @@ public class Player extends GameObject implements Runnable {
                         this.server.printAll("PLAYER_GUN " + this.getPlayerId() + " " + this.primaryGun.getModel());
                     } break;
                 case Const.SECONDARY_SLOT:
-                System.out.println(this.secondaryGun.getModel());
                     this.setHoldingSlot(Const.SECONDARY_SLOT);
                     this.getHolding().takeOut();
                     this.getHolding().setActive(true);
@@ -363,7 +362,9 @@ public class Player extends GameObject implements Runnable {
 
             for(Door door: this.room.getDoors()){
                 if(this.getCircleHitbox().intersects(door.getHitBox()) && door.cooldown.finished()){
+                    this.room.removePlayer(this);
                     this.setRoom(door.getExit().getThisRoom());
+                    this.room.addPlayer(this);
                     this.setX(door.getExit().thisExitLocation()[0]);
                     this.setY(door.getExit().thisExitLocation()[1]);
                     door.getExit().exit();
@@ -417,7 +418,6 @@ public class Player extends GameObject implements Runnable {
                     gun.toString().equals("Finch") ||
                     gun.toString().equals("Hummingbird") ||
                     gun.toString().equals("Raven")){
-                        System.out.println("buy sidearm");
                     this.setGun(Const.SECONDARY_SLOT, new Gun(gun.toString(), gun.getMaxAmmo()));
                 } else {
                     this.setGun(Const.PRIMARY_SLOT, new Gun(gun.toString(), gun.getMaxAmmo()));
@@ -508,7 +508,11 @@ public class Player extends GameObject implements Runnable {
         return this.health;
     }
     public void setHealth(int health) {
-        this.health = health;
+        if(health < 0) {
+            this.health = 0;
+        } else {
+            this.health = health;
+        }
     }
 
     public int getShield(){
