@@ -75,7 +75,7 @@ public class Player extends GameObject implements Runnable {
             while (true) {
                 String msg = input.readLine();
                 if (msg.length() > 0) {
-                    System.out.println("input: " + msg);
+                    System.out.println("input from " + this.playerId + ": " + msg);
                     this.messages.add(msg);
                 }
             }
