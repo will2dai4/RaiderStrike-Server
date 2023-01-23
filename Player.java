@@ -1,10 +1,16 @@
 import java.net.*;
 import java.util.*;
+
+import javax.management.StringValueExp;
+
 import java.awt.geom.*;
 import java.io.*;
 import java.awt.*;
+import java.awt.geom.*;
 
 public class Player extends GameObject implements Runnable {
+    private int x;
+    private int y;
     // x and y are player center
     private String name;
     private Team team; // 0 -> Red Team | 1 -> Blue Team
@@ -52,8 +58,6 @@ public class Player extends GameObject implements Runnable {
         this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.output = new PrintWriter(socket.getOutputStream());
 
-        this.setWidth(Const.PLAYER_RADIUS*2);
-        this.setHeight(Const.PLAYER_RADIUS*2);
         this.health = Const.STARTING_HEALTH;
         this.shield = Const.STARTING_SHIELD;
         this.holdingSlot = 2;
@@ -63,12 +67,25 @@ public class Player extends GameObject implements Runnable {
         this.defaultMovementSpeed = Const.PLAYER_MOVEMENT_SPEED;
         this.movementSpeed = this.defaultMovementSpeed;
 
-        this.radius = this.getWidth()/2;
-
         this.state = this.server.state;
         this.messages = new LinkedList<String>();
     }
 
+    public int getX() {
+        return x;
+    }
+    public void setX(double x) {
+        this.x = (int)x;
+    }
+    public int getY() {
+        return y;
+    }
+    public void setY(double y) {
+        this.y = (int)y;
+    }
+    public Ellipse2D.Double getHitbox() {
+        return new Ellipse2D.Double(this.x - Const.PLAYER_RADIUS, this.y - Const.PLAYER_RADIUS, Const.PLAYER_RADIUS * 2, Const.PLAYER_RADIUS * 2);
+    }
     public void run() {
         try {
             while (true) {
@@ -164,7 +181,7 @@ public class Player extends GameObject implements Runnable {
     }
 
     public boolean collides(Obstacle obstacle) {
-        return this.hitbox.intersects(obstacle.getHitbox());
+        return this.getHitbox().intersects(obstacle.getHitbox());
     }
     
     public void resetMovementSpeed() {
@@ -264,42 +281,42 @@ public class Player extends GameObject implements Runnable {
                 break;
             case 1: // up
                 this.moving = true;
-                this.setY(this.getDoubleY() - this.movementSpeed); break;
+                this.setY(this.y - this.movementSpeed); break;
             case 2: // down
                 this.moving = true;
-                this.setY(this.getDoubleY() + this.movementSpeed); break;
+                this.setY(this.y + this.movementSpeed); break;
             case 3: // left
                 this.moving = true;
-                this.setX(this.getDoubleX() - this.movementSpeed); break;
+                this.setX(this.x - this.movementSpeed); break;
             case 4: // right
                 this.moving = true;
-                this.setX(this.getDoubleX() + this.movementSpeed); break;
+                this.setX(this.x + this.movementSpeed); break;
             case 5: // up-right
                 this.moving = true;
-                this.setX(this.getDoubleX() + (this.movementSpeed / Math.sqrt(2)));
-                this.setY(this.getDoubleY() - (this.movementSpeed / Math.sqrt(2))); break;
+                this.setX(this.x + (this.movementSpeed / Math.sqrt(2)));
+                this.setY(this.y - (this.movementSpeed / Math.sqrt(2))); break;
             case 6: // up-left
                 this.moving = true;
-                this.setX(this.getDoubleX() - (this.movementSpeed / Math.sqrt(2))); 
-                this.setY(this.getDoubleY() - (this.movementSpeed / Math.sqrt(2))); break;
+                this.setX(this.x - (this.movementSpeed / Math.sqrt(2))); 
+                this.setY(this.y - (this.movementSpeed / Math.sqrt(2))); break;
             case 7: // down-left
                 this.moving = true;
-                this.setX(this.getDoubleX() - (this.movementSpeed / Math.sqrt(2)));
-                this.setY(this.getDoubleY() + (this.movementSpeed / Math.sqrt(2))); break;
+                this.setX(this.x - (this.movementSpeed / Math.sqrt(2)));
+                this.setY(this.y + (this.movementSpeed / Math.sqrt(2))); break;
             case 8: // down-right
                 this.moving = true;
-                this.setX(this.getDoubleX() + (this.movementSpeed / Math.sqrt(2)));
-                this.setY(this.getDoubleY() + (this.movementSpeed / Math.sqrt(2))); break;
+                this.setX(this.x + (this.movementSpeed / Math.sqrt(2)));
+                this.setY(this.y + (this.movementSpeed / Math.sqrt(2))); break;
         }
         if(this.moveDirection != 0){
-            if((this.getDoubleX() - this.radius) < 0)                         { this.setX(this.radius); }
-            if((this.getDoubleY() - this.radius) < 0)                         { this.setY(this.radius); }
-            if((this.getDoubleX() + this.radius) > this.getRoom().getWidth()) { this.setX(this.getRoom().getWidth() - this.radius); }
-            if((this.getDoubleY() + this.radius) > this.getRoom().getHeight()) { this.setY(this.getRoom().getHeight() - this.radius); }
-
+            if((this.x - this.radius) < 0)                         { this.setX(this.radius); }
+            if((this.y - this.radius) < 0)                         { this.setY(this.radius); }
+            if((this.x + this.radius) > this.getRoom().getWidth()) { this.setX(this.getRoom().getWidth() - this.radius); }
+            if((this.y + this.radius) > this.getRoom().getHeight()) { this.setY(this.getRoom().getHeight() - this.radius); }
+            /*
             for(Obstacle obstacle: this.room.getObstacles()){
                 if(this.collides(obstacle)){
-                    Rectangle2D collision = this.hitbox.createIntersection(obstacle.getHitbox());
+                    Rectangle2D collision = this.getHitbox().createIntersection(obstacle.getHitbox());
                     switch(this.moveDirection){
                         case 1: // up
                             this.setY(obstacle.getDoubleY() + obstacle.getHeight() + this.radius); break;
@@ -336,9 +353,10 @@ public class Player extends GameObject implements Runnable {
                     }
                 }
             }
+            */
 
             for(Door door: this.room.getDoors()){
-                if(this.hitbox.intersects(door.getHitBox()) && door.cooldown.finished()){
+                if(this.getHitbox().intersects(door.getHitBox()) && door.cooldown.finished()){
                     this.setRoom(door.getExit().getThisRoom());
                     this.setX(door.getExit().thisExitLocation()[0]);
                     this.setY(door.getExit().thisExitLocation()[1]);
@@ -405,18 +423,6 @@ public class Player extends GameObject implements Runnable {
     }
 
 // ------------------------------------------------------------------------------------------------
-    // getters and setters
-    @Override
-    public void setX(double x){
-        this.x = x;
-        this.hitbox.setRect(x - this.radius, this.hitbox.getY(), this.hitbox.getWidth(), this.hitbox.getHeight());
-    }
-    @Override
-    public void setY(double y){
-        this.y = y;
-        this.hitbox.setRect(this.hitbox.getX(), y - this.radius, this.hitbox.getWidth(), this.hitbox.getHeight());
-    }
-
     public String getName() {
         return this.name;
     }
