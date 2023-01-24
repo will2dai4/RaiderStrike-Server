@@ -146,7 +146,7 @@ public class Player extends GameObject implements Runnable {
             int[] bullet = this.getHolding().fire();
             if(bullet[0] == 1){
                 int bulletDirection = bullet[1] + this.getDirection();
-                this.server.shoot(new BulletTracer(this.getX(), this.getY(), bulletDirection, GunModel.valueOf(this.getHolding().getModel()).getDamage()), this);
+                this.server.shoot(new BulletTracer(this.getX(), this.getY(), bulletDirection, GunModel.valueOf(this.getHolding().getModel()).getDamage(), this.team), this);
             }
         }
         try{
@@ -388,7 +388,7 @@ public class Player extends GameObject implements Runnable {
             bullet = this.getHolding().fire();
             if(bullet[0] == 1){
                 int bulletDirection = bullet[1] + this.getDirection();
-                this.server.shoot(new BulletTracer(this.getX(), this.getY(), bulletDirection, GunModel.valueOf(this.getHolding().getModel()).getDamage()), this);
+                this.server.shoot(new BulletTracer(this.getX(), this.getY(), bulletDirection, GunModel.valueOf(this.getHolding().getModel()).getDamage(), this.team), this);
             }
         }
     }

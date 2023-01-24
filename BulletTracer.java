@@ -11,13 +11,15 @@ public class BulletTracer extends Line2D {
     private double endX;
     private double endY;
     private int damage;
+    private Team shooter;
 
     private int direction;
 
-    BulletTracer(int x, int y, int degrees, int damage){
+    BulletTracer(int x, int y, int degrees, int damage, Team shooter){
         this.startX = x;
         this.startY = y;
         this.damage = damage;
+        this.shooter = shooter;
 
         this.direction = degrees;
         this.endX = (Const.DEFAULT_BULLET_DISTANCE)*Math.cos((this.direction*Math.PI)/180);
@@ -73,7 +75,7 @@ public class BulletTracer extends Line2D {
 
     public ArrayList<GameObject> hits(ArrayList<Obstacle> obstacles, ArrayList<Player> players){
         ArrayList<Obstacle> obsCollides = new ArrayList<>();
-        ArrayList<Player> playCollides = new ArrayList<>();
+        ArrayList<Player> playCollides = new ArrayList<>(); playCollides.removeAll(this.shooter.getTeam());
         ArrayList<GameObject> hits = new ArrayList<>();
         for(Obstacle obstacle: obstacles){
             if(this.intersects(obstacle.getHitBox())){

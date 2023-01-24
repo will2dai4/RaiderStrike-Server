@@ -185,7 +185,6 @@ public class Server {
                 roomPlayers.add(player);
             }
         }
-        roomPlayers.remove(shooter);
 
         ArrayList<GameObject> hits = tracer.hits(roomObstacles, roomPlayers);
         if(!hits.isEmpty() && roomObstacles.contains(hits.get(0))) {
