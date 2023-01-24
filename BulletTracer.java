@@ -2,7 +2,7 @@ import java.awt.geom.*;
 import java.awt.*;
 import java.util.*;
 
-/* Class that manages Bullets and Tracers
+/* Class that manages Bullets, Tracers, and Bullet-Player collisions
  */
 
 public class BulletTracer extends Line2D {
@@ -73,6 +73,7 @@ public class BulletTracer extends Line2D {
         return d <= Const.PLAYER_RADIUS;
     }
 
+    // Returns a list of all objects that would be hit 
     public ArrayList<GameObject> hits(ArrayList<Obstacle> obstacles, ArrayList<Player> players){
         ArrayList<Obstacle> obsCollides = new ArrayList<>();
         ArrayList<Player> playCollides = new ArrayList<>(); playCollides.removeAll(this.shooter.getTeam());
@@ -107,7 +108,8 @@ public class BulletTracer extends Line2D {
         return hits;
     }
 
-    public void closestIntersection(GameObject object){ // finds closest bullet-object collision points
+    // Finds closest Bullet-Obstacle collision point
+    public void closestIntersection(GameObject object){
         Line2D topLine = new Line2D.Double(object.getX(), object.getY(), object.getX() + object.getWidth(), object.getY());
         Line2D botLine = new Line2D.Double(object.getX(), object.getY() + object.getHeight(), object.getX() + object.getWidth(), object.getY() + object.getHeight());
         Line2D leftLine = new Line2D.Double(object.getX(), object.getY(), object.getX(), object.getY() + object.getHeight());

@@ -47,7 +47,6 @@ public class Player extends GameObject implements Runnable {
 
     private GameState state;
     private Queue<String> messages;
-    private Timer playerActionDelay; /*TODO: implement this */
 
     Player(int playerId, Socket socket, Server server) throws IOException {
         this.playerId = playerId;
@@ -93,15 +92,14 @@ public class Player extends GameObject implements Runnable {
             while (true) {
                 String msg = input.readLine();
                 if (msg.length() > 0) {
-                    //System.out.println("input from " + this.playerId + ": " + msg);
                     this.messages.add(msg);
                 }
             }
         } catch (Exception e) {
-            /* THIS IS WHAT IS RUN WHEN THE SOCKET CLOSES! TODO: implement player disconnect */
+            e.printStackTrace();
         }
     }
-
+    // Update Player and read Client inputs
     public void update() throws InterruptedException{
         while(!messages.isEmpty()){
             if(messages.peek() != null){
@@ -129,7 +127,6 @@ public class Player extends GameObject implements Runnable {
                             case "UTIL": if(this.alive) this.util(args); break;
                             case "RELOAD": if(this.alive) this.reload(); break;
                             case "BOMB": if(this.alive) this.bomb(); break;
-                            case "PICKUP": if(this.alive) this.pickUp(args); break;
                         }
                     case "BUYMENU":
                         switch(command){
@@ -138,7 +135,7 @@ public class Player extends GameObject implements Runnable {
                 }
             } else {messages.poll();}
         }
-
+        // Movement and Firing toggles
         if(this.moving){
             this.move(new String[]{this.moveDirection + ""});
         }
@@ -153,7 +150,7 @@ public class Player extends GameObject implements Runnable {
             Thread.sleep(10);
         } catch (InterruptedException e){ e.printStackTrace(); }
     }
-
+    // Print information to Client
     public void print(String text) {
         if (this.socket == null) {
             System.out.println("Dead socket, message send failure");
@@ -171,17 +168,6 @@ public class Player extends GameObject implements Runnable {
         if(this.getReady()){
             this.server.printTeam("READY " + this.getPlayerId(), this.team);
         }
-    }
-
-    public void kill() {
-        Gun gunDrop;
-        if (this.getPrimGun() != null) {
-            gunDrop = this.getPrimGun();
-        } else {
-            gunDrop = this.getSecGun();
-        }
-        this.setAlive(false);
-        /* TODO: Drop gun function */
     }
 
     public boolean collides(Obstacle obstacle) {
@@ -318,10 +304,10 @@ public class Player extends GameObject implements Runnable {
             if((this.y - this.radius) < 0)                         { this.setY(this.radius); }
             if((this.x + this.radius) > this.getRoom().getWidth()) { this.setX(this.getRoom().getWidth() - this.radius); }
             if((this.y + this.radius) > this.getRoom().getHeight()){ this.setY(this.getRoom().getHeight() - this.radius); }
-            /*
+            // Check for Obstacle collision
             for(Obstacle obstacle: this.room.getObstacles()){
                 if(this.collides(obstacle)){
-                    Rectangle2D collision = this.getHitbox().createIntersection(obstacle.getHitbox());
+                    Rectangle2D collision = this.getHitBox().createIntersection(obstacle.getHitbox());
                     switch(this.moveDirection){
                         case 1: // up
                             this.setY(obstacle.getDoubleY() + obstacle.getHeight() + this.radius); break;
@@ -358,8 +344,7 @@ public class Player extends GameObject implements Runnable {
                     }
                 }
             }
-            */
-
+            // Check for Door entry
             for(Door door: this.room.getDoors()){
                 if(this.getCircleHitbox().intersects(door.getHitBox()) && door.cooldown.finished()){
                     this.room.removePlayer(this);
@@ -392,16 +377,13 @@ public class Player extends GameObject implements Runnable {
             }
         }
     }
-    private void util(String[] args){
+    private void util(String[] args){ // Could not be implemented
         
     }
     private void reload(){
         this.getHolding().reload();
     }
-    private void bomb(){ /*TODO: do this */
-        
-    }
-    private void pickUp(String[] args){
+    private void bomb(){ // Could not be Implemented
         
     }
 

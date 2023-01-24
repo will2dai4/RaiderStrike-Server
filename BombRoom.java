@@ -9,6 +9,7 @@ public class BombRoom extends Room{
         super(roomId, width, height, obstacles, doors);
     }
 
+    // Bomb could not be implemented in time
     public void plant(){
         this.bombPlanted = true;
     }

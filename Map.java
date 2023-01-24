@@ -25,6 +25,7 @@ public class Map {
         this.rooms = new ArrayList<>();
         this.allDoors = new ArrayList<>();
     }
+    // Build the Map through the Map File
     public void buildMap() throws IOException{
         this.name = input.readLine();
         this.roomCount = Integer.parseInt(input.readLine()); 
@@ -40,7 +41,7 @@ public class Map {
             String penObsColor = input.readLine();
             int width = Integer.parseInt(input.readLine());
             int height = Integer.parseInt(input.readLine());
-
+            // Instantiate Obstacles
             int obsCount = Integer.parseInt(input.readLine());
             ArrayList<Obstacle> obstacles = new ArrayList<>();
             for(int j=0;j<obsCount;j++){
@@ -54,7 +55,7 @@ public class Map {
 
                 obstacles.add(new Obstacle(shape, obsWidth, obsHeight, obsX, obsY, permeable));
             }
-
+            // Instantiate Doors
             int doorCount = Integer.parseInt(input.readLine());
             ArrayList<Door> doors = new ArrayList<>();
             for(int j=0;j<doorCount;j++){
@@ -73,7 +74,7 @@ public class Map {
                     doors.add(door);
                 }
             }
-
+            // Create Room
             Room room;
             if(i == defenderRoom || i == attackerRoom){
                 String[] spawns = input.readLine().split(" ");

@@ -8,8 +8,7 @@ public class Room {
     private final int roomId;
     private final int width;
     private final int height;
-    private final Rectangle roomRect;
-
+    // GameObjects within Room
     private final ArrayList<Obstacle> obstacles;
     private final ArrayList<Door> doors;
     private final ArrayList<Player> players;
@@ -20,7 +19,6 @@ public class Room {
         this.roomId = roomId;
         this.width = width;
         this.height = height;
-        this.roomRect = new Rectangle(0, 0, this.width, this.height);
 
         this.obstacles = obstacles;
         this.doors = doors;

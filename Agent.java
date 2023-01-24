@@ -19,6 +19,7 @@ public enum Agent {
     public int getAgentId(){
         return this.agentId;
     }
+    // Abilities could not be implemented in time
     public int getBasicAbility(){
         return this.basicAbility;
     }

@@ -7,8 +7,6 @@ public class Const {
     public static final int MAX_PLAYER_COUNT = 6;
     public static final int MAX_TEAM_SIZE = 3;
     public static final double PLAYER_MOVEMENT_SPEED = 6; // pixels per frame
-    public static final double STARTING_VELOCITY = 30; // object velocity
-    public static final double DECCELERATION = 8; // pixels/second
 
     public static final int MAX_NAME_LENGTH = 24;
 

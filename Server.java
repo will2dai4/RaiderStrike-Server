@@ -144,6 +144,7 @@ public class Server {
     }
     
     private boolean canStart(){
+        // Commented code is for actual game, uncommented code for purpose of testing
         if(this.players.size() >= 2){
             for(Player player: this.players.values()){
                 if(!player.getReady()){
@@ -164,8 +165,9 @@ public class Server {
             return true;
         }
         return false;
-        */ // TODO: reimplement with allLoaded() when done testing
+        */
     }
+    // Check if all the Players are loaded in
     private boolean allLoaded(){
         if(this.players.size() >= 2){
             for(Player player: this.players.values()){
@@ -177,6 +179,7 @@ public class Server {
         }
         return false;
     }
+    // Send a bullet into the game and give Client details
     public void shoot(BulletTracer tracer, Player shooter){
         ArrayList<Obstacle> roomObstacles = shooter.getRoom().getObstacles();
         ArrayList<Player> roomPlayers = new ArrayList<Player>();
@@ -214,12 +217,13 @@ public class Server {
     }
 
 //------------------------------------------------------------------------------------------------------
-
+    // Function prints to all Clients
     public void printAll(String text){
         for(Player player: players.values()){
             player.print(text);
         }
     }
+    // Function prints to all Clients on team
     public void printTeam(String text, Team team){
         for(Player player: players.values()){
             if(player.getTeam() >= 0 && player.getTeam() == (team.getTeamNum())){

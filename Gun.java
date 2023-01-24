@@ -17,13 +17,13 @@ public class Gun {
         this.active = false;
     }
     
-    public boolean ready(){
+    public boolean ready(){ // Check if the gun is ready to be used
         boolean ready = gunCooldown.finished();
         if(ready) this.preReloadAmmo = this.ammo;
         return ready;
     }
 
-    public int[] fire(){ // return if fired and degree offset
+    public int[] fire(){ // Return if fired and the degree offset
         int[] bullet = new int[2];
         if(this.ammo > 0 && this.ready()) {
             this.ammo--;
@@ -47,7 +47,7 @@ public class Gun {
         }
         return 0;
     }
-    public double takeOut(){
+    public double takeOut(){ // Start a timer that represents the take-out time
         gunCooldown.setTimerLength(1/(model.getFireRate()/3));
         gunCooldown.start();
         return (model.getFireRate()/3);

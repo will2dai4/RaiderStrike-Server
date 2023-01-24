@@ -12,6 +12,7 @@ public class Timer {
     public void setTimerLength(double timeLength){
         this.timerLength = timeLength*1000;
     }
+    // Returns if the Timer is up
     public boolean finished(){
         double currentTime = System.currentTimeMillis();
         if(this.startTime == 0 || this.timerLength == 0){
